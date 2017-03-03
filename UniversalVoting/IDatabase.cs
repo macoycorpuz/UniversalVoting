@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace EXAM_02_Corpuz
+namespace UniversalVoting
 {
     interface IDatabase
     {

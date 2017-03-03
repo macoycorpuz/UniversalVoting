@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EXAM_02_Corpuz
+namespace UniversalVoting
 {
     class Database : IDatabase, IDisposable
     {
