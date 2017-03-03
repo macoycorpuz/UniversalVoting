@@ -1,0 +1,338 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{965709A1-3989-44CC-9B77-44620BC8AE8C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UniversalVoting</RootNamespace>
+    <AssemblyName>UniversalVoting</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="JudgeTabs\RatingStar.xaml.cs">
+      <DependentUpon>RatingStar.xaml</DependentUpon>
+    </Compile>
+    <Page Include="EventOrganizerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="JudgeTabs\TabResults.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="JudgeTabs\TabVoting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="JudgeWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EventOrganizerWindow.xaml.cs">
+      <DependentUpon>EventOrganizerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="JudgeTabs\TabResults.xaml.cs">
+      <DependentUpon>TabResults.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="JudgeTabs\TabVoting.xaml.cs">
+      <DependentUpon>TabVoting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="JudgeWindow.xaml.cs">
+      <DependentUpon>JudgeWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="LoginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="JudgeTabs\RatingStar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="LoginWindow.xaml.cs">
+      <DependentUpon>LoginWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Resource Include="Fonts\Helvetica Bold.ttf" />
+    <Resource Include="Fonts\Helvetica-Black-SemiBold.ttf" />
+    <Resource Include="Fonts\Helvetica-Black.otf" />
+    <Resource Include="Fonts\Helvetica-BlackOblique.otf" />
+    <Resource Include="Fonts\Helvetica-BoldOblique.otf" />
+    <Resource Include="Fonts\Helvetica-Compressed.otf" />
+    <Resource Include="Fonts\Helvetica-Condensed-Black-Se.ttf" />
+    <Resource Include="Fonts\Helvetica-Condensed-Black.otf" />
+    <Resource Include="Fonts\Helvetica-Condensed-Bold.otf" />
+    <Resource Include="Fonts\Helvetica-Condensed-Light-Li.ttf" />
+    <Resource Include="Fonts\Helvetica-Condensed-Light-Light.ttf" />
+    <Resource Include="Fonts\Helvetica-Condensed-Light.otf" />
+    <Resource Include="Fonts\Helvetica-Condensed-Oblique.otf" />
+    <Resource Include="Fonts\Helvetica-Condensed-Thin.ttf" />
+    <Resource Include="Fonts\Helvetica-Condensed.otf" />
+    <Resource Include="Fonts\Helvetica-Conth.ttf" />
+    <Resource Include="Fonts\Helvetica-ExtraCompressed.otf" />
+    <Resource Include="Fonts\Helvetica-Fraction.otf" />
+    <Resource Include="Fonts\Helvetica-FractionBold.otf" />
+    <Resource Include="Fonts\Helvetica-Light-Light-Italic.ttf" />
+    <Resource Include="Fonts\Helvetica-Light.otf" />
+    <Resource Include="Fonts\Helvetica-LightOblique.otf" />
+    <Resource Include="Fonts\Helvetica-Narrow-Bold.otf" />
+    <Resource Include="Fonts\Helvetica-Narrow-BoldItalic.otf" />
+    <Resource Include="Fonts\Helvetica-Narrow-BoldOblique.otf" />
+    <Resource Include="Fonts\Helvetica-Narrow-Italic.otf" />
+    <Resource Include="Fonts\Helvetica-Narrow-Oblique.otf" />
+    <Resource Include="Fonts\Helvetica-Narrow.otf" />
+    <Resource Include="Fonts\Helvetica-Normal.ttf" />
+    <Resource Include="Fonts\Helvetica-Oblique.otf" />
+    <Resource Include="Fonts\Helvetica-UltraCompressed.otf" />
+    <Resource Include="Fonts\Helvetica.otf" />
+    <Resource Include="Fonts\HelveticaBQ-Black.otf" />
+    <Resource Include="Fonts\HelveticaBQ-BlackItalic.otf" />
+    <Resource Include="Fonts\HelveticaCE-Bold.otf" />
+    <Resource Include="Fonts\HelveticaCE-BoldOblique.otf" />
+    <Resource Include="Fonts\HelveticaCE-Cond.otf" />
+    <Resource Include="Fonts\HelveticaCE-CondBold.otf" />
+    <Resource Include="Fonts\HelveticaCE-CondBoldObl.otf" />
+    <Resource Include="Fonts\HelveticaCE-CondObl.otf" />
+    <Resource Include="Fonts\HelveticaCE-Narrow.otf" />
+    <Resource Include="Fonts\HelveticaCE-NarrowBold.otf" />
+    <Resource Include="Fonts\HelveticaCE-NarrowBoldOblique.otf" />
+    <Resource Include="Fonts\HelveticaCE-NarrowOblique.otf" />
+    <Resource Include="Fonts\HelveticaCE-Oblique.otf" />
+    <Resource Include="Fonts\HelveticaCE.otf" />
+    <Resource Include="Fonts\HelveticaConBQ-Bold.otf" />
+    <Resource Include="Fonts\HelveticaConBQ-ExtraLight.otf" />
+    <Resource Include="Fonts\HelveticaConBQ-ExtraLightItalic.otf" />
+    <Resource Include="Fonts\HelveticaConBQ-Medium.otf" />
+    <Resource Include="Fonts\HelveticaCyr-Bold.otf" />
+    <Resource Include="Fonts\HelveticaCyr-BoldInclined.otf" />
+    <Resource Include="Fonts\HelveticaCyr-Inclined.otf" />
+    <Resource Include="Fonts\HelveticaCyr-Upright.otf" />
+    <Resource Include="Fonts\HelveticaCyrA-Bold.otf" />
+    <Resource Include="Fonts\HelveticaCyrA-BoldInclined.otf" />
+    <Resource Include="Fonts\HelveticaCyrA-Inclined.otf" />
+    <Resource Include="Fonts\HelveticaCyrA-Upright.otf" />
+    <Resource Include="Fonts\HelveticaDiagonalBQ.otf" />
+    <Resource Include="Fonts\HelveticaExt-No.ttf" />
+    <Resource Include="Fonts\HelveticaExtendedBQ-ExtraLight.otf" />
+    <Resource Include="Fonts\HelveticaExtO 2.ttf" />
+    <Resource Include="Fonts\HelveticaExtO 3.ttf" />
+    <Resource Include="Fonts\HelveticaExtO 4.ttf" />
+    <Resource Include="Fonts\HelveticaFractionsBQ.otf" />
+    <Resource Include="Fonts\HelveticaInserat-Roman-SemiB.ttf" />
+    <Resource Include="Fonts\HelveticaInserat-Roman-SemiBold%281%29.ttf" />
+    <Resource Include="Fonts\HelveticaInserat-Roman.otf" />
+    <Resource Include="Fonts\HelveticaInseratBQ-Italic.otf" />
+    <Resource Include="Fonts\HelveticaInseratBQ-Regular.otf" />
+    <Resource Include="Fonts\HelveticaInseratCyr-Upright.otf" />
+    <Resource Include="Fonts\HelveticaInseratLTStd-Roman.otf" />
+    <Resource Include="Fonts\HelveticaLTStd- steevo -Roman - pointed .ttf" />
+    <Resource Include="Fonts\HelveticaLTStd-Blk.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-BlkCond.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-BlkCondObl.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-BlkObl.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-Bold.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-BoldCond.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-BoldCondObl.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-BoldObl.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-Comp.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-Cond.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-CondObl.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-ExtraComp.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-Fractions.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-FractionsBd.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-Light.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-LightCond.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-LightCondObl.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-LightObl.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-Obl.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-Roman.otf" />
+    <Resource Include="Fonts\HelveticaLTStd-UltraComp.otf" />
+    <Resource Include="Fonts\HelveticaNeue-Black.otf" />
+    <Resource Include="Fonts\HelveticaNeue-BlackItalic.otf" />
+    <Resource Include="Fonts\HelveticaNeue-Bold.otf" />
+    <Resource Include="Fonts\HelveticaNeue-BoldItalic.otf" />
+    <Resource Include="Fonts\HelveticaNeue-Condensed.otf" />
+    <Resource Include="Fonts\HelveticaNeue-HeavyItalic.otf" />
+    <Resource Include="Fonts\HelveticaNeue-Light.otf" />
+    <Resource Include="Fonts\HelveticaNeue-LightItalic.otf" />
+    <Resource Include="Fonts\HelveticaNeue-Thin.otf" />
+    <Resource Include="Fonts\HelveticaNeue-ThinItalic.otf" />
+    <Resource Include="Fonts\HelveticaNeueLT-BlackCond.otf" />
+    <Resource Include="Fonts\HelveticaNeueLT-BoldCond.otf" />
+    <Resource Include="Fonts\HelveticaNeueLT-LightCond.otf" />
+    <Resource Include="Fonts\HelveticaNeueLT-ThinCond.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-BdExO_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-BdEx_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-BdOu_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-BlkCnO_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-BlkCn_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-BlkExO_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-BlkEx_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-Blk_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-CnO_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-Cn_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-ExO_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-Ex_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-LtCnO_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-LtCn_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-LtExO_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-LtEx_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-Lt_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-MdCnO_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-MdCn_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-MdExO_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-MdEx_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-Md_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-Roman_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-ThCnO_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-ThCn_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-ThExO_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-ThEx_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-Th_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-UltLtCnO_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-UltLtCn_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-UltLtExO_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-UltLtEx_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-UltLt_1.otf" />
+    <Resource Include="Fonts\HelveticaNeueLTStd-XBlkCn_1.otf" />
+    <Resource Include="Fonts\HelveticaObl-He.ttf" />
+    <Resource Include="Fonts\HelveticaObl-Li.ttf" />
+    <Resource Include="Fonts\HelveticaObl-Th.ttf" />
+    <Resource Include="Fonts\HelveticaRounded-Black.otf" />
+    <Resource Include="Fonts\HelveticaRounded-Bold.otf" />
+    <Resource Include="Fonts\HelveticaRounded-BoldCond.otf" />
+    <Resource Include="Fonts\HelveticaRoundedLT-Black.otf" />
+    <Resource Include="Fonts\HelveticaRoundedLT-Bold.otf" />
+    <Resource Include="Fonts\HelveticaRoundedLT-BoldCond.otf" />
+    <Resource Include="Fonts\HelveticaRoundedLTStd-Bd.otf" />
+    <Resource Include="Fonts\HelveticaRoundedLTStd-BdCn.otf" />
+    <Resource Include="Fonts\HelveticaRoundedLTStd-BdCnO.otf" />
+    <Resource Include="Fonts\HelveticaRoundedLTStd-BdO.otf" />
+    <Resource Include="Fonts\HelveticaRoundedLTStd-Black.otf" />
+    <Resource Include="Fonts\HelveticaRoundedLTStd-BlkO.otf" />
+    <Resource Include="Fonts\HelveticaTwoBQ-BoldItalic.otf" />
+    <Resource Include="Fonts\HelveticaTwoBQ-Roman.otf" />
+    <Resource Include="Fonts\HelveticaWorld-Bold.ttf" />
+    <Resource Include="Fonts\HelveticaWorld-BoldItalic.ttf" />
+    <Resource Include="Fonts\HelveticaWorld-Italic.ttf" />
+    <Resource Include="Fonts\HelveticaWorld-Regular.ttf" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="pic.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="EventOrganizerTabs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\bgLogin.jpeg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\iconResults.png" />
+    <Resource Include="Images\iconVoting.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\bgTabControl.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\iconCheck.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\iconCircle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\iconX.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\iconAvatar.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\MinusRate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\PlusRate.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

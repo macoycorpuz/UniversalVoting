@@ -1,0 +1,43 @@
+﻿<Window x:Class="UniversalVoting.JudgeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:UniversalVoting"
+        xmlns:usrctrl="clr-namespace:UniversalVoting.JudgeTabs"
+        Title="Universal Voting System Application" WindowState="Maximized" >
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontFamily" Value="../Fonts/HelveticaLTStd-Lightotf#Helvetica LT Std Light"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Images/bgLogin.jpeg" Stretch="UniformToFill" Opacity="0.85"/>
+        </Grid.Background>
+        <TabControl Name="tabctrlJudge" TabStripPlacement="Left">
+            <TabControl.Background>
+                <ImageBrush ImageSource="/Images/bgTabControl.jpg" Stretch="UniformToFill" Opacity="0.85"/>
+            </TabControl.Background>
+            <TabItem Name="tabItemVoting">
+                <TabItem.Header>
+                    <StackPanel>
+                        <Image Source="/Images/iconVoting.png" Height="70"  Width="70"/>
+                        <TextBlock Text="Voting"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <usrctrl:TabVoting/>
+            </TabItem>
+            <TabItem Name="tabItemResults">
+                <TabItem.Header>
+                    <StackPanel>
+                        <Image Source="/Images/iconResults.png" Height="70"  Width="70"/>
+                        <TextBlock Text="Results"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <usrctrl:TabResults/>
+            </TabItem>
+        </TabControl>
+        
+    </Grid>
+</Window>

@@ -1,0 +1,64 @@
+﻿<Window x:Class="UniversalVoting.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UniversalVoting"
+        mc:Ignorable="d"
+        Title="Universal Voting System Application" WindowState="Maximized">
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Images/bgLogin.jpeg" Stretch="UniformToFill" Opacity="0.85"/>
+        </Grid.Background>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Label Content="Universal Voting System App" 
+                   HorizontalAlignment="Center" 
+                   Height="100" 
+                   FontSize="60" 
+                   FontFamily="../Fonts/HelveticaLTStd-Bold.otf#Helvetica LT Std Bold" 
+                   Margin="20"/>
+
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Label Content="Username:"
+                       FontWeight="Heavy" 
+                       FontFamily="../Fonts/Helvetica-Narrow.otf#Helvetica Narrow"
+                       FontSize="16"/>
+                <TextBox Name="txtUsername" 
+                         TextWrapping="Wrap" 
+                         MaxLength="32" 
+                         Width="250" 
+                         FontSize="16"
+                         Template="{StaticResource TextBoxBaseControlTemplate}"/>
+                <Label Name="lblErrorUsername" Foreground="Red"/>
+                <Label Content="Password:" 
+                       FontWeight="Heavy" 
+                       FontSize="16"
+                       FontFamily="../Fonts/Helvetica-Narrow.otf#Helvetica Narrow"/>
+                <PasswordBox Name="txtPassword" 
+                             Width="250" 
+                             FontSize="16"
+                             Template="{StaticResource PassBoxBaseControlTemplate}"/>
+                <Label Name="lblErrorUPassword"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
+                <Button Name="btnLogin" 
+                        Content="Login" 
+                        HorizontalAlignment="Center" 
+                        Width="75" 
+                        Margin="0,40,20,0" 
+                        Height="40" 
+                        IsDefault="true" 
+                        FontSize="16" />
+                <Button Name="btnRegister" 
+                        Content="Create Event" 
+                        HorizontalAlignment="Center"  
+                        Width="110" 
+                        Margin="20,40,0,0" 
+                        Height="40" 
+                        IsDefault="true" 
+                        FontSize="16" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
