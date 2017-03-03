@@ -33,6 +33,7 @@ namespace UniversalVoting.JudgeTabs
             InitializeComponent();
             LoadContestants();
             LoadCriteria();
+            //Try lang
         }
 
         private void LoadContestants()
