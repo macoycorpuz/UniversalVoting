@@ -55,6 +55,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Database.cs" />
+    <Compile Include="IDatabase.cs" />
     <Compile Include="JudgeTabs\RatingStar.xaml.cs">
       <DependentUpon>RatingStar.xaml</DependentUpon>
     </Compile>
