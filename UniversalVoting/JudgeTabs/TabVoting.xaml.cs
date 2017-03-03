@@ -34,6 +34,7 @@ namespace UniversalVoting.JudgeTabs
             LoadContestants();
             LoadCriteria();
             //Try lang
+            //Try Commit kay KyleWork1 (add code tapos lagay karin comments para cool) hahaha
         }
 
         private void LoadContestants()
