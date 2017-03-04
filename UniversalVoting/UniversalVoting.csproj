@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+<<<<<<< HEAD
     <Compile Include="EventOrganizerTabs\TabContestants.xaml.cs">
       <DependentUpon>TabContestants.xaml</DependentUpon>
     </Compile>
@@ -64,6 +65,10 @@
     <Compile Include="EventOrganizerTabs\TabJudges.xaml.cs">
       <DependentUpon>TabJudges.xaml</DependentUpon>
     </Compile>
+=======
+    <Compile Include="Database.cs" />
+    <Compile Include="IDatabase.cs" />
+>>>>>>> refs/remotes/origin/master
     <Compile Include="JudgeTabs\RatingStar.xaml.cs">
       <DependentUpon>RatingStar.xaml</DependentUpon>
     </Compile>
