@@ -109,9 +109,7 @@ namespace UniversalVoting.JudgeTabs
             string strImgName = Img.Name;
             intRate = Convert.ToInt32(strImgName.Substring(strImgName.Length - 1, 1));
         }
-
-        //try ko lang to
-
+        
 
     }
 }

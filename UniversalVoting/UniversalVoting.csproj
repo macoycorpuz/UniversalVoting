@@ -55,9 +55,30 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EventOrganizerTabs\TabContestants.xaml.cs">
+      <DependentUpon>TabContestants.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EventOrganizerTabs\TabCriteria.xaml.cs">
+      <DependentUpon>TabCriteria.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EventOrganizerTabs\TabJudges.xaml.cs">
+      <DependentUpon>TabJudges.xaml</DependentUpon>
+    </Compile>
     <Compile Include="JudgeTabs\RatingStar.xaml.cs">
       <DependentUpon>RatingStar.xaml</DependentUpon>
     </Compile>
+    <Page Include="EventOrganizerTabs\TabContestants.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EventOrganizerTabs\TabCriteria.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EventOrganizerTabs\TabJudges.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="EventOrganizerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -296,9 +317,7 @@
   <ItemGroup>
     <Resource Include="pic.jpg" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="EventOrganizerTabs\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Images\bgLogin.jpeg" />
   </ItemGroup>
