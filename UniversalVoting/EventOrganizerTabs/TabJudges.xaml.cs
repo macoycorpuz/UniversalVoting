@@ -16,6 +16,7 @@ using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Data;
 using System.Windows.Forms;
+using UniversalVoting;
 
 namespace UniversalVoting.EventOrganizerTabs
 {
@@ -45,23 +46,30 @@ namespace UniversalVoting.EventOrganizerTabs
 
         public TabJudges()
         {
+            IDatabase clsDatabase = new Database();
+            clsDatabase.ExecuteCommand("Select * From Critera");  
+            dgAccounts.ItemsSource = clsDatabase.Data.DefaultView;         
+
+
+             
+
             InitializeComponent();
 
 
-            account = new List<Account>()
-            {
-                new Account("Kyle","hateydiha","kantahan"),
-                new Account("marcuz","malibog","marcuz_pass"),
-                new Account("Grace","Ganda","hehe")
-            };
+            //account = new List<Account>()
+            //{
+            //    new Account("Kyle","hateydiha","kantahan"),
+            //    new Account("marcuz","malibog","marcuz_pass"),
+            //    new Account("Grace","Ganda","hehe")
+            //};
 
-            List<SqlDbType> mylist = new List<SqlDbType>();
-            mylist.Add(SqlDbType.Bit);
-            dgAccounts.ItemsSource = account;
+            //List<SqlDbType> mylist = new List<SqlDbType>();
+            //mylist.Add(SqlDbType.Bit);
+            //dgAccounts.ItemsSource = account;
 
-            cmbjudgeoptions.Items.Add("Edit");
-            cmbjudgeoptions.Items.Add("Add");
-            cmbjudgeoptions.Items.Add("Delete");
+            //cmbjudgeoptions.Items.Add("Edit");
+            //cmbjudgeoptions.Items.Add("Add");
+            //cmbjudgeoptions.Items.Add("Delete");
         }
 
         private void cmbjudgeoptions_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -5,17 +5,22 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace UniversalVoting
 {
     class Database : IDatabase, IDisposable
     {
+
+ 
+        private string strTitle = ConfigurationManager.AppSettings["Title"];
+
         #region Attributes
-        private string dataSource;
-        private string initialCatalog;
-        private bool integratedSecurity;
-        private string userID;
-        private string password;
+        private string dataSource = ConfigurationManager.AppSettings["DataSource"];
+        private string initialCatalog = ConfigurationManager.AppSettings["InitialCatalog"];
+        private bool integratedSecurity = bool.Parse(ConfigurationManager.AppSettings["IntegratedSecurity"]);
+        private string userID = ConfigurationManager.AppSettings["UserID"];
+        private string password = ConfigurationManager.AppSettings["Password"];
 
         private SqlConnection sqlCon;
         private SqlConnectionStringBuilder sqlConString;
@@ -34,7 +39,7 @@ namespace UniversalVoting
             get { return hasConnectionError; }
             private set { hasConnectionError = value; }
         }
-        
+
         /// <summary>
         /// Return Connection Error (Message)
         /// </summary>
@@ -49,6 +54,7 @@ namespace UniversalVoting
             get { return data; }
             private set { data = value; }
         }
+
         #endregion
 
         #region Constructors
@@ -59,15 +65,10 @@ namespace UniversalVoting
         /// <param name="DataSource"></param>
         /// <param name="InitialCatalog"></param>
         /// <param name="IntegratedSecurity"></param>
-        public Database(string DataSource, string InitialCatalog, bool IntegratedSecurity)
+        public Database()
         {
-            this.dataSource = DataSource;
-            this.initialCatalog = InitialCatalog;
-            this.integratedSecurity = IntegratedSecurity;
-            
             this.HasConnectionError = true;
             this.ConnectionError = "";
-
             this.Process();
         }
 
@@ -79,11 +80,9 @@ namespace UniversalVoting
         /// <param name="IntegratedSecurity"></param>
         /// <param name="UserID"></param>
         /// <param name="Password"></param>
-        public Database(string DataSource, string InitialCatalog, bool IntegratedSecurity, string UserID, string Password)
+        public Database(string UserID, string Password)
         {
-            this.dataSource = DataSource;
-            this.initialCatalog = InitialCatalog;
-            this.integratedSecurity = IntegratedSecurity;
+
             this.userID = UserID;
             this.password = Password;
             
