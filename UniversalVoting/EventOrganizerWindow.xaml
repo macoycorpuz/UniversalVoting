@@ -4,9 +4,53 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UniversalVoting"
+        xmlns:myusercontrol="clr-namespace:UniversalVoting.EventOrganizerTabs" 
         mc:Ignorable="d"
-        Title="EventOrganizerWindow" Height="300" Width="300">
+        Title="EventOrganizerWindow" WindowState="Maximized">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontFamily" Value="../Fonts/HelveticaLTStd-Lightotf#Helvetica LT Std Light"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+    </Window.Resources>
     <Grid>
-        
+        <Grid.Background>
+            <ImageBrush ImageSource="/Images/bgLogin.jpeg" Stretch="UniformToFill" Opacity="0.85"/>
+        </Grid.Background>
+        <TabControl Name="tabctrlEventOrg" TabStripPlacement="Left" >
+            <TabControl.Background>
+                <ImageBrush ImageSource="/Images/bgTabControl.jpg" Stretch="UniformToFill" Opacity="0.85"/>
+            </TabControl.Background>
+            <TabItem Name="tabItemJudges">
+                <TabItem.Header>
+                    <StackPanel>
+                        <Image Source="/Images/iconResults.png" Height="70"  Width="70"/>
+                        <TextBlock Text="Judges"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <myusercontrol:TabJudges/>
+            </TabItem>
+            <TabItem Name="tabItemContestants">
+                <TabItem.Header>
+                    <StackPanel>
+                        <Image Source="/Images/iconResults.png" Height="70"  Width="70"/>
+                        <TextBlock Text="Contestants"/>
+                    </StackPanel>
+                </TabItem.Header>
+
+                <myusercontrol:TabContestants/>
+            </TabItem>
+            <TabItem Name="tabItemCriteria">
+                <TabItem.Header>
+                    <StackPanel>
+                        <Image Source="/Images/iconResults.png" Height="70"  Width="70"/>
+                        <TextBlock Text="Criteria"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <myusercontrol:TabCriteria/>
+            </TabItem>
+
+        </TabControl>
     </Grid>
 </Window>

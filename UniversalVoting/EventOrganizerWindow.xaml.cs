@@ -19,9 +19,26 @@ namespace UniversalVoting
     /// </summary>
     public partial class EventOrganizerWindow : Window
     {
+
+        private int _eventid;
         public EventOrganizerWindow()
         {
             InitializeComponent();
         }
+
+        public EventOrganizerWindow(int event_id)
+        {
+            InitializeComponent();
+            _eventid = event_id;
+        }
+
+        //using the Database
+        /*
+            IDatabase clsDatabase;                                  //initialize the instance
+            clsDatabase.ExecuteAdapterQuery(tb1.Text.ToString());   //pass the query
+            dg1.ItemsSource = clsDatabase.Data.DefaultView;         //retrieve the data
+         
+         
+         */
     }
 }
