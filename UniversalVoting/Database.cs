@@ -103,7 +103,6 @@ namespace UniversalVoting
         public void Dispose()
         {
             this.ConnectionClose();
-            this.CommandClose();
         }
 
         #endregion
@@ -116,8 +115,6 @@ namespace UniversalVoting
         public void Process()
         {
             this.ConnectionOpen();
-            this.CommandOpen();
-            this.CommandClose();
             this.ConnectionClose();
         }
 
@@ -127,16 +124,23 @@ namespace UniversalVoting
         /// <param name="command"></param>
         public void ExecuteCommand(string command)
         {
-            ConnectionOpen();
-            CommandOpen();
-            sqlCmd.CommandText = command;
-            using (sqlAdpt = new SqlDataAdapter(sqlCmd))
+            try
             {
-                data = new DataTable();
-                sqlAdpt.Fill(data);
+                ConnectionOpen();
+                using (sqlCmd = new SqlCommand(command, sqlCon))
+                using (sqlAdpt = new SqlDataAdapter(sqlCmd))
+                {
+                    data = new DataTable();
+                    sqlAdpt.Fill(data);
+                }
+                ConnectionClose();
+                this.HasConnectionError = false;
             }
-            CommandClose();
-            ConnectionClose();
+            catch (Exception ex)
+            {
+                this.HasConnectionError = true;
+                this.ConnectionError = ex.Message;
+            }
         }
 
         /// <summary>
@@ -145,17 +149,32 @@ namespace UniversalVoting
         /// <param name="command"></param>
         public void ExecuteStoredProcedure(string command)
         {
-            ConnectionOpen();
-            CommandOpen();
-            sqlCmd.CommandText = command;
-            using (sqlAdpt = new SqlDataAdapter(sqlCmd))
+            try
             {
-                sqlCmd.CommandType = CommandType.StoredProcedure;
-                data = new DataTable();
-                sqlAdpt.Fill(data);
+                ConnectionOpen();
+                using (sqlCmd = new SqlCommand(command, sqlCon))
+                using (sqlAdpt = new SqlDataAdapter(sqlCmd))
+                {
+                    sqlCmd.CommandType = CommandType.StoredProcedure;
+
+                    //Insert table
+                    data = new DataTable();
+                    sqlAdpt.Fill(data);
+
+                    //Insert return value
+                    //SqlParameter retval = sqlCmd.Parameters.Add("@Return_Value", SqlDbType.NVarChar);
+
+                    //retval.Direction = ParameterDirection.ReturnValue;
+                    //returnValue = (string)retval.Value;
+                }
+                ConnectionClose();
+                this.HasConnectionError = false;
             }
-            CommandClose();
-            ConnectionClose();
+            catch (Exception ex)
+            {
+                this.HasConnectionError = true;
+                this.ConnectionError = ex.Message;
+            }
         }
 
         /// <summary>
@@ -165,18 +184,32 @@ namespace UniversalVoting
         /// <param name="sqlParam"></param>
         public void ExecuteStoredProcedure(string command, List<SqlParameter> sqlParam)
         {
-            ConnectionOpen();
-            CommandOpen();
-            sqlCmd.CommandText = command;
-            using (sqlAdpt = new SqlDataAdapter(sqlCmd))
+            try
             {
-                sqlCmd.CommandType = CommandType.StoredProcedure;
-                sqlCmd.Parameters.AddRange(sqlParam.ToArray());
-                data = new DataTable();
-                sqlAdpt.Fill(data);
+                ConnectionOpen();
+                using (sqlCmd = new SqlCommand(command, sqlCon))
+                using (sqlAdpt = new SqlDataAdapter(sqlCmd))
+                {
+                    sqlCmd.CommandType = CommandType.StoredProcedure;
+                    sqlCmd.Parameters.AddRange(sqlParam.ToArray());
+
+                    //Insert table
+                    data = new DataTable();
+                    sqlAdpt.Fill(data); //Dito error
+
+                    //Insert return value
+                    //SqlParameter retval = sqlCmd.Parameters.Add("@Return_Value", SqlDbType.NVarChar);
+                    //retval.Direction = ParameterDirection.ReturnValue;
+                    //returnValue = (string)retval.Value;
+                }
+                ConnectionClose();
+                this.HasConnectionError = false;
             }
-            CommandClose();
-            ConnectionClose();
+            catch (Exception ex)
+            {
+                this.HasConnectionError = true;
+                this.ConnectionError = ex.Message;
+            }
         }
 
         #endregion
@@ -227,33 +260,33 @@ namespace UniversalVoting
             }
         }
 
-        private void CommandOpen()
-        {
-            this.sqlCmd = new SqlCommand();
+        //private void CommandOpen()
+        //{
+        //    this.sqlCmd = new SqlCommand();
 
-            try
-            {
-                this.sqlCmd.Connection.Open();
-                this.HasConnectionError = false;
-            }
-            catch (Exception ex)
-            {
-                this.ConnectionError = ex.Message;
-            }
-        }
-        private void CommandClose()
-        {
-            if (this.sqlCmd != null)
-            {
-                if (this.sqlCmd.Connection.State == ConnectionState.Open)
-                {
-                    this.sqlCmd.Connection.Close();
-                }
+        //    try
+        //    {
+        //        this.sqlCmd.Connection.Open();
+        //        this.HasConnectionError = false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        this.ConnectionError = ex.Message;
+        //    }
+        //}
+        //private void CommandClose()
+        //{
+        //    if (this.sqlCmd != null)
+        //    {
+        //        if (this.sqlCmd.Connection.State == ConnectionState.Open)
+        //        {
+        //            this.sqlCmd.Connection.Close();
+        //        }
 
-                this.sqlCmd.Connection.Dispose();
-                this.sqlCmd = null;
-            }
-        }
+        //        this.sqlCmd.Connection.Dispose();
+        //        this.sqlCmd = null;
+        //    }
+        //}
 
         #endregion
     }

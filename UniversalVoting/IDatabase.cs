@@ -13,6 +13,8 @@ namespace UniversalVoting
         bool HasConnectionError { get; }
         string ConnectionError { get; }
 
+        //string ReturnValue { get; }
+
         DataTable Data { get; }
 
         void ExecuteCommand(string command);
