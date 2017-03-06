@@ -25,7 +25,8 @@ namespace UniversalVoting.EventOrganizerTabs
     /// </summary>
     public partial class TabJudges : System.Windows.Controls.UserControl
     {
-        public List<Account> account;
+        public List<Account> allaccounts;
+        public List<Account> eventaccounts;
 
         public class Account
         {
@@ -46,30 +47,33 @@ namespace UniversalVoting.EventOrganizerTabs
 
         public TabJudges()
         {
-            IDatabase clsDatabase = new Database();
-            clsDatabase.ExecuteCommand("Select * From Critera");  
-            dgAccounts.ItemsSource = clsDatabase.Data.DefaultView;         
-
-
-             
-
             InitializeComponent();
+            //IDatabase clsDatabase = new Database();
+            //clsDatabase.ExecuteCommand("Select * From Critera");  
+            //dgAccounts.ItemsSource = clsDatabase.Data.DefaultView;         
 
+            #region  intializers
 
-            //account = new List<Account>()
-            //{
-            //    new Account("Kyle","hateydiha","kantahan"),
-            //    new Account("marcuz","malibog","marcuz_pass"),
-            //    new Account("Grace","Ganda","hehe")
-            //};
+            eventaccounts = new List<Account>();
+            allaccounts = new List<Account>()
+            {
+                new Account("Kyle","hateydiha","kantahan"),
+                new Account("marcuz","malibog","marcuz_pass"),
+                new Account("Grace","Ganda","hehe")
+            };
 
-            //List<SqlDbType> mylist = new List<SqlDbType>();
-            //mylist.Add(SqlDbType.Bit);
-            //dgAccounts.ItemsSource = account;
+            List<SqlDbType> mylist = new List<SqlDbType>();
+            mylist.Add(SqlDbType.Bit);
 
-            //cmbjudgeoptions.Items.Add("Edit");
-            //cmbjudgeoptions.Items.Add("Add");
-            //cmbjudgeoptions.Items.Add("Delete");
+            dgAllAccounts.ItemsSource = allaccounts;
+            dgEventAccounts.ItemsSource = eventaccounts;
+
+            cmbjudgeoptions.Items.Add("Edit");
+            cmbjudgeoptions.Items.Add("Add");
+            cmbjudgeoptions.Items.Add("Remove");
+            cmbjudgeoptions.Items.Add("Cancel");
+
+            #endregion
         }
 
         private void cmbjudgeoptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -79,14 +83,14 @@ namespace UniversalVoting.EventOrganizerTabs
         private void cmbjudgeoptions_SelectionChanged()
         {
             txbjudgeuname.Text = txbjudgepword.Text = txbjudgename.Text = "";
-            dgAccounts.IsEnabled = false;
+            dgEventAccounts.IsEnabled = false;
 
             if (cmbjudgeoptions.SelectedIndex == 0)
             {
                 txbjudgename.IsEnabled = false;
                 txbjudgepword.IsEnabled = false;
                 txbjudgeuname.IsEnabled = false;
-                dgAccounts.IsEnabled = true;
+                dgEventAccounts.IsEnabled = true;
                 btnjudgeconfirm.Visibility = Visibility.Visible;
                 btnjudgeconfirm.Content = "Edit";
             }
@@ -103,12 +107,13 @@ namespace UniversalVoting.EventOrganizerTabs
                 txbjudgename.IsEnabled = false;
                 txbjudgepword.IsEnabled = false;
                 txbjudgeuname.IsEnabled = false;
-                dgAccounts.IsEnabled = true;
+                dgEventAccounts.IsEnabled = true;
                 btnjudgeconfirm.Visibility = Visibility.Visible;
-                btnjudgeconfirm.Content = "Delete";
+                btnjudgeconfirm.Content = "Remove";
             }
             else
             {
+                cmbjudgeoptions.SelectedIndex = -1;
                 btnjudgeconfirm.Visibility = Visibility.Hidden;
             }
         }
@@ -117,7 +122,7 @@ namespace UniversalVoting.EventOrganizerTabs
         {
             if (cmbjudgeoptions.SelectedIndex == 0)
             {
-                Account dataRow = (Account)dgAccounts.SelectedItem;
+                Account dataRow = (Account)dgEventAccounts.SelectedItem;
                 txbjudgename.Text = dataRow.judgename.ToString();
                 txbjudgeuname.Text = dataRow.username.ToString();
                 txbjudgepword.Text = dataRow.password.ToString();
@@ -132,35 +137,68 @@ namespace UniversalVoting.EventOrganizerTabs
         {
             if (cmbjudgeoptions.SelectedIndex == 0)
             {
-                Account dataRow = (Account)dgAccounts.SelectedItem;
+                //edit a judge
+                Account dataRow = (Account)dgEventAccounts.SelectedItem;
                 dataRow.judgename = txbjudgename.Text.ToString();
                 dataRow.username = txbjudgeuname.Text.ToString();
                 dataRow.password = txbjudgepword.Text.ToString();
-                dgAccounts.SelectedItem = dataRow;
+                dgEventAccounts.SelectedItem = dataRow;
             }
             else if (cmbjudgeoptions.SelectedIndex == 1)
             {
-                account.Add(new Account(txbjudgename.Text, txbjudgeuname.Text, txbjudgepword.Text));
-                dgAccounts.IsEnabled = true;
-                dgAccounts.Items.Refresh();
+                //adding a judge      
+                eventaccounts.Add(new Account(txbjudgename.Text, txbjudgeuname.Text, txbjudgepword.Text));
+                dgEventAccounts.IsEnabled = true;
+                dgEventAccounts.Items.Refresh();
             }
             else if (cmbjudgeoptions.SelectedIndex == 2)
             {
-                Account dataRow = (Account)dgAccounts.SelectedItem;
+                //deleting a judge
+                Account dataRow = (Account)dgEventAccounts.SelectedItem;
                 String s = "Confirm deletion of Account \n\nAccount Name: \t"+ dataRow.judgename.ToString()+"\nUsername: \t" + dataRow.username.ToString()+"\nPassword: \t"+ dataRow.password.ToString();
                 DialogResult dialogResult = System.Windows.Forms.MessageBox.Show(s, "Confirm Deletion of Account", MessageBoxButtons.YesNo);
                 if (dialogResult ==DialogResult.Yes)
                 {
-                    account.RemoveAt(dgAccounts.SelectedIndex);
+                    eventaccounts.RemoveAt(dgEventAccounts.SelectedIndex);
                     cmbjudgeoptions.SelectedIndex = -1;
-                    dgAccounts.IsEnabled = true;
-                    dgAccounts.Items.Refresh();
-                    dgAccounts.IsEnabled = false;
+                    dgEventAccounts.IsEnabled = true;
+                    dgEventAccounts.Items.Refresh();
+                    dgEventAccounts.IsEnabled = false;
                 }
             }
+
             cmbjudgeoptions_SelectionChanged();
 
 
+        }
+
+        private void dgAllAccounts_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            lblerrorindicator1.Content = "";
+        }
+
+        private void btnaddexisting_Click(object sender, RoutedEventArgs e)
+        {
+
+            bool doesnotexist = true;
+
+            Account dataRow = (Account)dgAllAccounts.SelectedItem;
+            for(int x = 0; x<eventaccounts.Count();x++)
+            {
+                if ((dataRow.judgename == eventaccounts[x].judgename || dataRow.username == eventaccounts[x].username | dataRow.password == eventaccounts[x].password))
+                {
+                    doesnotexist = true;
+                    lblerrorindicator1.Content = "Account Already exists";
+                    return;
+                }
+
+            }
+            if (doesnotexist)
+            {
+                lblerrorindicator1.Content = "Account Added";
+                eventaccounts.Add(new Account(dataRow.judgename.ToString(), dataRow.username.ToString(), dataRow.password.ToString()));
+                dgEventAccounts.Items.Refresh();
+            }
         }
     }
 }
