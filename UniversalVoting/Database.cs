@@ -176,6 +176,7 @@ namespace UniversalVoting
             }
         }
 
+
         /// <summary>
         /// This executes a stored procedure with parameters.
         /// </summary>
@@ -290,3 +291,51 @@ namespace UniversalVoting
         #endregion
     }
 }
+
+
+//DATABASE SCRIPT TO BE USED
+/*
+ 
+     
+     
+     
+     
+     
+     
+     Create Procedure [dbo].[spCheckUnameavailability]
+(
+	@judgechars						VarChar(50)
+
+)
+as
+Begin
+	Begin TRY
+		Begin Transaction
+		
+		Select judgeUname from Judge
+		where judgeUname = @judgechars
+
+		Commit Transaction
+	End try
+
+
+	Begin Catch
+		Rollback Transaction
+		Select ERROR_MESSAGE() as 'Return_Value';
+	End Catch
+End
+
+  Create view  [dbo].[vwdgallaccounts]
+as
+  Select P.FirstName,P.LastName,J.judgeUname,j.judgePword from Person as P
+  inner join Judge as J
+	on J.PersonID = P.PersonID
+  Inner join EventJudges as EJ
+   on EJ.JudgeID = J.JudgeID
+
+
+GO
+     
+     
+     
+     */

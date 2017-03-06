@@ -24,6 +24,10 @@ namespace UniversalVoting
         public EventOrganizerWindow()
         {
             InitializeComponent();
+            _eventid = 1;
+            //Forcing to pass a number 1 as Event Id
+            ucjudges.passingidvalue(_eventid);
+            
         }
 
         public EventOrganizerWindow(int event_id)

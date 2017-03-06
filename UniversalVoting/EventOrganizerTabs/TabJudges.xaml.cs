@@ -27,46 +27,45 @@ namespace UniversalVoting.EventOrganizerTabs
     {
         public List<Account> allaccounts;
         public List<Account> eventaccounts;
-
+        private int _tabeventid;
         public class Account
         {
-            public string judgename { get; set; }
-            public string username { get; set; }
-            public string password { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string judgeUname { get; set; }
+            public string judgePword { get; set; }
 
-            public Account(string jname, string uname, string pass)
+            public Account(string fname,string lname, string uname, string pass)
             {
-                judgename = jname;
-                username = uname;
-                password = pass;
+                FirstName = fname;
+                LastName = lname;
+                judgeUname = uname;
+                judgePword = pass;
 
             }
             
         }
 
-
         public TabJudges()
         {
             InitializeComponent();
-            //IDatabase clsDatabase = new Database();
-            //clsDatabase.ExecuteCommand("Select * From Critera");  
-            //dgAccounts.ItemsSource = clsDatabase.Data.DefaultView;         
+            IDatabase clsDatabase = new Database();
+            clsDatabase.ExecuteCommand("Select * From [vwdgallaccounts]");  
+            dgAllAccounts.ItemsSource = clsDatabase.Data.DefaultView;         
+
 
             #region  intializers
 
             eventaccounts = new List<Account>();
             allaccounts = new List<Account>()
             {
-                new Account("Kyle","hateydiha","kantahan"),
-                new Account("marcuz","malibog","marcuz_pass"),
-                new Account("Grace","Ganda","hehe")
+                new Account("Kyle", "Floresta","hateydiha","kantahan"),
+                new Account("marcuz", "Corpuz","malibog","marcuz_pass"),
+                new Account("Grace","Reyes","Ganda","hehe")
             };
 
-            List<SqlDbType> mylist = new List<SqlDbType>();
-            mylist.Add(SqlDbType.Bit);
-
-            dgAllAccounts.ItemsSource = allaccounts;
-            dgEventAccounts.ItemsSource = eventaccounts;
+            //dgAllAccounts.ItemsSource = allaccounts;
+           dgEventAccounts.ItemsSource = eventaccounts;
 
             cmbjudgeoptions.Items.Add("Edit");
             cmbjudgeoptions.Items.Add("Add");
@@ -82,12 +81,14 @@ namespace UniversalVoting.EventOrganizerTabs
         }
         private void cmbjudgeoptions_SelectionChanged()
         {
-            txbjudgeuname.Text = txbjudgepword.Text = txbjudgename.Text = "";
-            dgEventAccounts.IsEnabled = false;
+            txbjudgeuname.Text = txbjudgepword.Text = txblname.Text = txbfname.Text= "";
+            unameavail.Content = "";
+           dgEventAccounts.IsEnabled = false;
 
             if (cmbjudgeoptions.SelectedIndex == 0)
             {
-                txbjudgename.IsEnabled = false;
+                txblname.IsEnabled = false;
+                txbfname.IsEnabled = false;
                 txbjudgepword.IsEnabled = false;
                 txbjudgeuname.IsEnabled = false;
                 dgEventAccounts.IsEnabled = true;
@@ -96,7 +97,8 @@ namespace UniversalVoting.EventOrganizerTabs
             }
             else if (cmbjudgeoptions.SelectedIndex == 1)
             {
-                txbjudgename.IsEnabled = true;
+                txblname.IsEnabled = true;
+                txbfname.IsEnabled = true;
                 txbjudgepword.IsEnabled = true;
                 txbjudgeuname.IsEnabled = true;
                 btnjudgeconfirm.Visibility = Visibility.Visible;
@@ -104,7 +106,8 @@ namespace UniversalVoting.EventOrganizerTabs
             }
             else if (cmbjudgeoptions.SelectedIndex == 2)
             {
-                txbjudgename.IsEnabled = false;
+                txblname.IsEnabled = false;
+                txbfname.IsEnabled = false;
                 txbjudgepword.IsEnabled = false;
                 txbjudgeuname.IsEnabled = false;
                 dgEventAccounts.IsEnabled = true;
@@ -123,10 +126,12 @@ namespace UniversalVoting.EventOrganizerTabs
             if (cmbjudgeoptions.SelectedIndex == 0)
             {
                 Account dataRow = (Account)dgEventAccounts.SelectedItem;
-                txbjudgename.Text = dataRow.judgename.ToString();
-                txbjudgeuname.Text = dataRow.username.ToString();
-                txbjudgepword.Text = dataRow.password.ToString();
-                txbjudgename.IsEnabled = true;
+                txbfname.Text = dataRow.FirstName.ToString();
+                txblname.Text = dataRow.LastName.ToString();
+                txbjudgeuname.Text = dataRow.judgeUname.ToString();
+                txbjudgepword.Text = dataRow.judgePword.ToString();
+                txblname.IsEnabled = true;
+                txbfname.IsEnabled = true;
                 txbjudgepword.IsEnabled = true;
                 txbjudgeuname.IsEnabled = true;
             }
@@ -139,23 +144,28 @@ namespace UniversalVoting.EventOrganizerTabs
             {
                 //edit a judge
                 Account dataRow = (Account)dgEventAccounts.SelectedItem;
-                dataRow.judgename = txbjudgename.Text.ToString();
-                dataRow.username = txbjudgeuname.Text.ToString();
-                dataRow.password = txbjudgepword.Text.ToString();
+                dataRow.FirstName = txbfname.Text;
+                dataRow.LastName = txblname.Text;
+                dataRow.judgeUname = txbjudgeuname.Text.ToString();
+                dataRow.judgePword = txbjudgepword.Text.ToString();
                 dgEventAccounts.SelectedItem = dataRow;
             }
             else if (cmbjudgeoptions.SelectedIndex == 1)
             {
                 //adding a judge      
-                eventaccounts.Add(new Account(txbjudgename.Text, txbjudgeuname.Text, txbjudgepword.Text));
+
+                if (txbfname.Text == "" || txbjudgepword.Text == "" || txbjudgeuname.Text == "" || txblname.Text == "")
+                    return;
+                 eventaccounts.Add(new Account(txbfname.Text,txblname.Text, txbjudgeuname.Text, txbjudgepword.Text));
                 dgEventAccounts.IsEnabled = true;
                 dgEventAccounts.Items.Refresh();
+                cmbjudgeoptions.SelectedIndex = -1;
             }
             else if (cmbjudgeoptions.SelectedIndex == 2)
             {
                 //deleting a judge
                 Account dataRow = (Account)dgEventAccounts.SelectedItem;
-                String s = "Confirm deletion of Account \n\nAccount Name: \t"+ dataRow.judgename.ToString()+"\nUsername: \t" + dataRow.username.ToString()+"\nPassword: \t"+ dataRow.password.ToString();
+                String s = "Confirm deletion of Account \n\nAccount Name: \t"+ dataRow.FirstName.ToString()+" "+ dataRow.LastName.ToString() + "\nUsername: \t" + dataRow.judgeUname.ToString()+"\nPassword: \t"+ dataRow.judgePword.ToString();
                 DialogResult dialogResult = System.Windows.Forms.MessageBox.Show(s, "Confirm Deletion of Account", MessageBoxButtons.YesNo);
                 if (dialogResult ==DialogResult.Yes)
                 {
@@ -166,28 +176,28 @@ namespace UniversalVoting.EventOrganizerTabs
                     dgEventAccounts.IsEnabled = false;
                 }
             }
-
             cmbjudgeoptions_SelectionChanged();
-
-
+            
         }
 
         private void dgAllAccounts_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            lblerrorindicator1.Content = "";
+           
         }
 
         private void btnaddexisting_Click(object sender, RoutedEventArgs e)
         {
-
             bool doesnotexist = true;
+            if ((dgAllAccounts.SelectedIndex == -1)||(dgAllAccounts.SelectedItem==null))
+                return;
 
-            Account dataRow = (Account)dgAllAccounts.SelectedItem;
+            DataRowView dataRow = (DataRowView)dgAllAccounts.SelectedItem;
             for(int x = 0; x<eventaccounts.Count();x++)
             {
-                if ((dataRow.judgename == eventaccounts[x].judgename || dataRow.username == eventaccounts[x].username | dataRow.password == eventaccounts[x].password))
+                if ((dataRow[1].ToString() == eventaccounts[x].LastName || dataRow[0].ToString() == eventaccounts[x].FirstName || dataRow[2].ToString() == eventaccounts[x].judgeUname ))
                 {
                     doesnotexist = true;
+                    lblerrorindicator1.Visibility = Visibility.Visible;
                     lblerrorindicator1.Content = "Account Already exists";
                     return;
                 }
@@ -195,10 +205,31 @@ namespace UniversalVoting.EventOrganizerTabs
             }
             if (doesnotexist)
             {
+                lblerrorindicator1.Visibility = Visibility.Visible;
                 lblerrorindicator1.Content = "Account Added";
-                eventaccounts.Add(new Account(dataRow.judgename.ToString(), dataRow.username.ToString(), dataRow.password.ToString()));
+                eventaccounts.Add(new Account(dataRow[0].ToString(), dataRow[1].ToString(), dataRow[2].ToString(), dataRow[3].ToString()));
                 dgEventAccounts.Items.Refresh();
+               
             }
+        }
+
+        public void passingidvalue(int x)
+        {
+            _tabeventid = x;
+        }
+
+
+        private void txbjudgeuname_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            IDatabase clsDatabase = new Database();
+            List<SqlParameter> prm = new List<SqlParameter>() { new SqlParameter("@judgechars", SqlDbType.NVarChar) { Value = txbjudgeuname.Text } };
+            clsDatabase.ExecuteStoredProcedure("[spCheckUnameavailability]", prm);
+            if (clsDatabase.Data.Rows.Count == 0)
+                unameavail.Content = "Username Available";
+            else
+                unameavail.Content = "Username Taken already";
+
+
         }
     }
 }

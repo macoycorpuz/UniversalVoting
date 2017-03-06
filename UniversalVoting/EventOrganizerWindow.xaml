@@ -22,6 +22,7 @@
             <TabControl.Background>
                 <ImageBrush ImageSource="/Images/bgTabControl.jpg" Stretch="UniformToFill" Opacity="0.85"/>
             </TabControl.Background>
+            
             <TabItem Name="tabItemJudges">
                 <TabItem.Header>
                     <StackPanel>
@@ -29,8 +30,9 @@
                         <TextBlock Text="Judges"/>
                     </StackPanel>
                 </TabItem.Header>
-                <myusercontrol:TabJudges/>
+                <myusercontrol:TabJudges x:Name="ucjudges"/>
             </TabItem>
+            
             <TabItem Name="tabItemContestants">
                 <TabItem.Header>
                     <StackPanel>
@@ -38,8 +40,8 @@
                         <TextBlock Text="Contestants"/>
                     </StackPanel>
                 </TabItem.Header>
-
                 <myusercontrol:TabContestants/>
+                
             </TabItem>
             <TabItem Name="tabItemCriteria">
                 <TabItem.Header>
