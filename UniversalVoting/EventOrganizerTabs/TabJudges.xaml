@@ -18,15 +18,15 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
             <RowDefinition Height=".7*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <Label Content="Judge Accounts for This Event" Grid.Row="5" FontSize="25" FontWeight="Bold" Grid.ColumnSpan="3"/>
-        <DataGrid Grid.Column="0" Grid.Row="5" Grid.RowSpan="4" IsReadOnly="True" IsEnabled="False" ColumnWidth="*" Grid.ColumnSpan="3" Name="dgEventAccounts" FontSize="20" SelectionMode="Single" SelectionChanged="dgAccounts_SelectionChanged"  />
+        <Label Content="Judge Accounts for This Event" Grid.Row="4" FontSize="25" FontWeight="Bold" Grid.ColumnSpan="3"/>
+        <DataGrid Grid.Column="0" Grid.Row="5" Grid.RowSpan="5" IsReadOnly="True" IsEnabled="False" ColumnWidth="*" Grid.ColumnSpan="3" Name="dgEventAccounts" FontSize="20" SelectionMode="Single" SelectionChanged="dgAccounts_SelectionChanged"  />
 
         <Label Content="All Judge Accounts"  FontSize="25" FontWeight="Bold"  Grid.ColumnSpan="2"/>
         <DataGrid Grid.Column="0" Grid.Row="1" Grid.RowSpan="3" IsReadOnly="True" IsEnabled="True" ColumnWidth="*" Grid.ColumnSpan="3" Name="dgAllAccounts" FontSize="20" SelectionMode="Single" SelectionChanged="dgAllAccounts_SelectionChanged"   />
@@ -63,7 +63,7 @@
                 <TextBox x:Name="txbjudgepword" IsEnabled="False" Width="250" FontSize="16" VerticalAlignment="Top" Height="30"/>
             </StackPanel>
             <Button x:Name="btnjudgeconfirm" Visibility="Hidden"  Content="" FontSize="16" Margin="0,20,0,0" Click="btnjudgeconfirm_Click"/>
-            <Button x:Name="btnjudgesave" Content="SAVE" FontSize="16" Margin="0,20,0,0" />
+            <Button x:Name="btnjudgesave" Content="SAVE" FontSize="16" Margin="0,20,0,0" Click="btnjudgesave_Click" />
         </StackPanel>
 
 
