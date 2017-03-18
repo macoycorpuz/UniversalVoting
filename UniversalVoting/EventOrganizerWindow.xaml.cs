@@ -25,13 +25,17 @@ namespace UniversalVoting
 
         public EventOrganizerWindow()
         {
-            _eventid = 1;
+            _eventid = 2;
 
             InitializeComponent();
             TabJudges junjun = new TabJudges(_eventid);
             markpogi.Children.Add(junjun);
 
-           // ucjudges.passingidvalue(_eventid);
+            TabCriteria junatahan = new TabCriteria(_eventid);
+            markpanget.Children.Add(junatahan);
+
+            TabCriteria jejeboy = new TabCriteria(_eventid);
+            markewan.Children.Add(jejeboy);
 
         }
 

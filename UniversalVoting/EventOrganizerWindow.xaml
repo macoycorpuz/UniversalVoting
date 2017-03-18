@@ -40,7 +40,7 @@
                         <TextBlock Text="Contestants"/>
                     </StackPanel>
                 </TabItem.Header>
-                <myusercontrol:TabContestants/>
+                <Grid Name="markpanget"/>
                 
             </TabItem>
             <TabItem Name="tabItemCriteria">
@@ -50,7 +50,7 @@
                         <TextBlock Text="Criteria"/>
                     </StackPanel>
                 </TabItem.Header>
-                <myusercontrol:TabCriteria/>
+                <Grid Name="markewan"/>
             </TabItem>
 
         </TabControl>
