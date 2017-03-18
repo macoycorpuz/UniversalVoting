@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:UniversalVoting"
         xmlns:myusercontrol="clr-namespace:UniversalVoting.EventOrganizerTabs" 
         mc:Ignorable="d"
-        Title="EventOrganizerWindow" WindowState="Maximized">
+        Title="EventOrganizerWindow" WindowState="Maximized" MinHeight="700" MinWidth="1100" Icon="/Images/iconWindow.png">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="24"/>
