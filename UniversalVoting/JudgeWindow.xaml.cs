@@ -21,9 +21,12 @@ namespace UniversalVoting
     /// </summary>
     public partial class JudgeWindow : Window
     {
-        public JudgeWindow()
+        int _judgeid;
+
+        public JudgeWindow(int JID)
         {
             InitializeComponent();
+            _judgeid = JID;
         }
     }
 

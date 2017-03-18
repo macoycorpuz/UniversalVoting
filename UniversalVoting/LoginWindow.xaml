@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UniversalVoting"
         mc:Ignorable="d"
-        Title="Universal Voting System Application" WindowState="Maximized">
+        Title="Universal Voting System Application" WindowState="Maximized" MinHeight="700" MinWidth="1100" Icon="/Images/iconWindow.png">
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="/Images/bgLogin.jpeg" Stretch="UniformToFill" Opacity="0.85"/>
@@ -29,7 +29,6 @@
                          Width="250" 
                          FontSize="16"
                          Template="{StaticResource TextBoxBaseControlTemplate}"/>
-                <Label Name="lblErrorUsername" Foreground="Red"/>
                 <Label Content="Password:" 
                        FontWeight="Heavy" 
                        FontSize="16"
@@ -38,7 +37,7 @@
                              Width="250" 
                              FontSize="16"
                              Template="{StaticResource PassBoxBaseControlTemplate}"/>
-                <Label Name="lblErrorUPassword"/>
+                <Label Name="lblError" Foreground="Red" HorizontalAlignment="Center"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
@@ -49,15 +48,16 @@
                         Margin="0,40,20,0" 
                         Height="40" 
                         IsDefault="true" 
-                        FontSize="16" />
+                        FontSize="16" 
+                        Click="btnLogin_Click"/>
                 <Button Name="btnRegister" 
                         Content="Create Event" 
                         HorizontalAlignment="Center"  
                         Width="110" 
                         Margin="20,40,0,0" 
                         Height="40" 
-                        IsDefault="true" 
-                        FontSize="16" />
+                        FontSize="16"
+                        Click="btnRegister_Click"/>
             </StackPanel>
         </StackPanel>
     </Grid>
