@@ -25,6 +25,7 @@ namespace UniversalVoting.EventOrganizerTabs
     {
         private int _tabeventid;
         IDatabase clsDatabase;
+        //wag mo erase default parameter para avoid error
 
         public TabJudges(int _myeveid)
         {
@@ -38,8 +39,10 @@ namespace UniversalVoting.EventOrganizerTabs
         {
             cmbjudgeoptions_SelectionChanged();
         }
+
         private void cmbjudgeoptions_SelectionChanged()
         {
+            //gawa ka sana methods para di paulit ulit hihi
             txbjudgeuname.Text = txbjudgepword.Text = txblname.Text = txbfname.Text= "";
             unameavail.Content = "";
            dgEventAccounts.IsEnabled = false;
@@ -113,6 +116,7 @@ namespace UniversalVoting.EventOrganizerTabs
 
         private void btnjudgeconfirm_Click(object sender, RoutedEventArgs e)
         {
+            //try mo wag initialize ulit database. minsan bumabagal ata
             DataRowView dataRow;
            
 
@@ -248,6 +252,7 @@ namespace UniversalVoting.EventOrganizerTabs
 
         private void btnaddexisting_Click(object sender, RoutedEventArgs e)
         {
+            //gumaganda to? wala ata pag initialize database
             if ((dgAllAccounts.SelectedIndex == -1)||(dgAllAccounts.SelectedItem==null))
                 return;
 
@@ -265,15 +270,15 @@ namespace UniversalVoting.EventOrganizerTabs
 
         public void RefreshDataGrids()
         {
+            //binura ko isa pang panginitialize para bumilis hihi
             clsDatabase = new Database();
             clsDatabase.ExecuteStoredProc("spViewNotEventJudges","@_eventid", _tabeventid);
             dgAllAccounts.ItemsSource = clsDatabase.Data.DefaultView;
-      
-            clsDatabase = new Database();
             clsDatabase.ExecuteStoredProc("spViewEventJudges", "@_eventid", _tabeventid);
             dgEventAccounts.ItemsSource = clsDatabase.Data.DefaultView;
         }
 
+        //Erase mo na to beh
         public void passingidvalue(int x)
         {
             _tabeventid = x;
