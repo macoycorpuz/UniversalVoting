@@ -30,7 +30,7 @@
                         <TextBlock Text="Judges"/>
                     </StackPanel>
                 </TabItem.Header>
-                <myusercontrol:TabJudges x:Name="ucjudges"/>
+                <Grid Name="markpogi"/>
             </TabItem>
             
             <TabItem Name="tabItemContestants">

@@ -10,18 +10,13 @@ namespace UniversalVoting
 {
     interface IDatabase
     {
-        bool HasConnectionError { get; }
-        string ConnectionError { get; }
-
-        //string ReturnValue { get; }
-
         DataTable Data { get; }
+   
+        bool HasError { get; }
 
-        void ExecuteCommand(string command);
+        void ExecuteCommand(string query);
 
-        void ExecuteStoredProcedure(string command);
-
-        void ExecuteStoredProcedure(string command, List<SqlParameter> sqlParam);
+        void ExecuteStoredProc(string query, params object[] args);
 
         void Dispose();
     }

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
+using System.Windows;
+
 
 namespace UniversalVoting
 {
@@ -22,32 +24,16 @@ namespace UniversalVoting
         private string userID = ConfigurationManager.AppSettings["UserID"];
         private string password = ConfigurationManager.AppSettings["Password"];
 
-        private SqlConnection sqlCon;
-        private SqlConnectionStringBuilder sqlConString;
+        private SqlConnection sqlCon = null;
+        private SqlConnectionStringBuilder sqlConString = null;
         private SqlCommand sqlCmd;
         private SqlDataAdapter sqlAdpt;
-
-        private bool hasConnectionError;
-        private string connectionError;
         private DataTable data;
+        private bool hasError;
 
         /// <summary>
         /// Returns Connection Error (bool)
         /// </summary>
-        public bool HasConnectionError
-        {
-            get { return hasConnectionError; }
-            private set { hasConnectionError = value; }
-        }
-
-        /// <summary>
-        /// Return Connection Error (Message)
-        /// </summary>
-        public string ConnectionError
-        {
-            get { return connectionError; }
-            private set { connectionError = value; }
-        }
 
         public DataTable Data
         {
@@ -55,42 +41,22 @@ namespace UniversalVoting
             private set { data = value; }
         }
 
+        public bool HasError
+        {
+            get { return hasError; }
+            private set { hasError = value; }
+        }
         #endregion
 
-        #region Constructors
+       #region Constructors
 
-        /// <summary>
-        /// Initialize Database (Windows Authentication)
-        /// </summary>
-        /// <param name="DataSource"></param>
-        /// <param name="InitialCatalog"></param>
-        /// <param name="IntegratedSecurity"></param>
+
         public Database()
         {
-            this.HasConnectionError = true;
-            this.ConnectionError = "";
-            this.Process();
-        }
-
-        /// <summary>
-        /// Initialize Database (SQL Server Authentication)
-        /// </summary>
-        /// <param name="DataSource"></param>
-        /// <param name="InitialCatalog"></param>
-        /// <param name="IntegratedSecurity"></param>
-        /// <param name="UserID"></param>
-        /// <param name="Password"></param>
-        public Database(string UserID, string Password)
-        {
-
-            this.userID = UserID;
-            this.password = Password;
-            
-            this.HasConnectionError = true;
-            this.ConnectionError = "";
 
             this.Process();
         }
+
 
         #endregion
 
@@ -106,9 +72,6 @@ namespace UniversalVoting
 
         #endregion
 
-        /// <summary>
-        /// All process and sql executions.
-        /// </summary>
         #region Process
 
         public void Process()
@@ -117,106 +80,72 @@ namespace UniversalVoting
             this.ConnectionClose();
         }
 
-        /// <summary>
-        /// This executes a sql command.
-        /// </summary>
-        /// <param name="command"></param>
-        public void ExecuteCommand(string command)
+        public void ExecuteCommand(string query)
         {
             try
             {
                 ConnectionOpen();
-                using (sqlCmd = new SqlCommand(command, sqlCon))
+                using (sqlCmd = new SqlCommand(query, sqlCon))
                 using (sqlAdpt = new SqlDataAdapter(sqlCmd))
                 {
                     data = new DataTable();
                     sqlAdpt.Fill(data);
                 }
                 ConnectionClose();
-                this.HasConnectionError = false;
+                this.HasError = false;
             }
             catch (Exception ex)
             {
-                this.HasConnectionError = true;
-                this.ConnectionError = ex.Message;
+                this.HasError = true;
+                MessageBox.Show("Unable to Execute Command!!\n\nError: " + ex.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
             }
         }
 
-        /// <summary>
-        /// This executes a stored procedure without parameters.
-        /// </summary>
-        /// <param name="command"></param>
-        public void ExecuteStoredProcedure(string command)
+     public void ExecuteStoredProc(string query, params object[] args)
         {
             try
             {
                 ConnectionOpen();
-                using (sqlCmd = new SqlCommand(command, sqlCon))
+                using (sqlCmd = new SqlCommand(query, sqlCon))
                 using (sqlAdpt = new SqlDataAdapter(sqlCmd))
                 {
+                    //Set Command Type to Stored Proc
                     sqlCmd.CommandType = CommandType.StoredProcedure;
 
-                    //Insert table
+                    //Construct Parameters
+                    for (int i = 0; i < args.Length; i++)
+                    {
+                        if (args[i] is string)
+                        {
+                            var sqlparam = new SqlParameter();
+                            sqlparam.ParameterName = (string)args[i];
+                            sqlparam.Value = args[++i];
+                            sqlCmd.Parameters.Add(sqlparam);
+                        }
+                        else if (args[i] is SqlParameter)
+                        {
+                            sqlCmd.Parameters.Add((SqlParameter)args[i]);
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Unknown sql parameter type");
+                        }
+                    }
+
+                    //Insert data
                     data = new DataTable();
                     sqlAdpt.Fill(data);
-
-                    //Insert return value
-                    //SqlParameter retval = sqlCmd.Parameters.Add("@Return_Value", SqlDbType.NVarChar);
-
-                    //retval.Direction = ParameterDirection.ReturnValue;
-                    //returnValue = (string)retval.Value;
                 }
                 ConnectionClose();
-                this.HasConnectionError = false;
             }
             catch (Exception ex)
             {
-                this.HasConnectionError = true;
-                this.ConnectionError = ex.Message;
-            }
-        }
-
-
-        /// <summary>
-        /// This executes a stored procedure with parameters.
-        /// </summary>
-        /// <param name="command"></param>
-        /// <param name="sqlParam"></param>
-        public void ExecuteStoredProcedure(string command, List<SqlParameter> sqlParam)
-        {
-            try
-            {
-                ConnectionOpen();
-                using (sqlCmd = new SqlCommand(command, sqlCon))
-                using (sqlAdpt = new SqlDataAdapter(sqlCmd))
-                {
-                    sqlCmd.CommandType = CommandType.StoredProcedure;
-                    sqlCmd.Parameters.AddRange(sqlParam.ToArray());
-
-                    //Insert table
-                    data = new DataTable();
-                    sqlAdpt.Fill(data); //Dito error
-
-                    //Insert return value
-                    //SqlParameter retval = sqlCmd.Parameters.Add("@Return_Value", SqlDbType.NVarChar);
-                    //retval.Direction = ParameterDirection.ReturnValue;
-                    //returnValue = (string)retval.Value;
-                }
-                ConnectionClose();
-                this.HasConnectionError = false;
-            }
-            catch (Exception ex)
-            {
-                this.HasConnectionError = true;
-                this.ConnectionError = ex.Message;
+                MessageBox.Show("Unable to Execute Stored Procedure!!\n\nError: " + ex.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
             }
         }
 
         #endregion
 
-        /// <summary>
-        /// Checking all connection problems.
-        /// </summary>
         #region Connection
 
         private void ConnectionOpen()
@@ -238,14 +167,14 @@ namespace UniversalVoting
                 
                 this.sqlCon.ConnectionString = this.sqlConString.ConnectionString;
                 this.sqlCon.Open();
-
-                this.HasConnectionError = false;
+                
             }
             catch (Exception ex)
             {
-                this.ConnectionError = ex.Message;
+                MessageBox.Show("Unable to connect database!!\n\nError: " + ex.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
             }
         }
+        
         private void ConnectionClose()
         {
             if (this.sqlCon != null)
@@ -260,82 +189,7 @@ namespace UniversalVoting
             }
         }
 
-        //private void CommandOpen()
-        //{
-        //    this.sqlCmd = new SqlCommand();
-
-        //    try
-        //    {
-        //        this.sqlCmd.Connection.Open();
-        //        this.HasConnectionError = false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        this.ConnectionError = ex.Message;
-        //    }
-        //}
-        //private void CommandClose()
-        //{
-        //    if (this.sqlCmd != null)
-        //    {
-        //        if (this.sqlCmd.Connection.State == ConnectionState.Open)
-        //        {
-        //            this.sqlCmd.Connection.Close();
-        //        }
-
-        //        this.sqlCmd.Connection.Dispose();
-        //        this.sqlCmd = null;
-        //    }
-        //}
 
         #endregion
     }
 }
-
-
-//DATABASE SCRIPT TO BE USED
-/*
- 
-     
-     
-     
-     
-     
-     
-     Create Procedure [dbo].[spCheckUnameavailability]
-(
-	@judgechars						VarChar(50)
-
-)
-as
-Begin
-	Begin TRY
-		Begin Transaction
-		
-		Select judgeUname from Judge
-		where judgeUname = @judgechars
-
-		Commit Transaction
-	End try
-
-
-	Begin Catch
-		Rollback Transaction
-		Select ERROR_MESSAGE() as 'Return_Value';
-	End Catch
-End
-
-  Create view  [dbo].[vwdgallaccounts]
-as
-  Select P.FirstName,P.LastName,J.judgeUname,j.judgePword from Person as P
-  inner join Judge as J
-	on J.PersonID = P.PersonID
-  Inner join EventJudges as EJ
-   on EJ.JudgeID = J.JudgeID
-
-
-GO
-     
-     
-     
-     */

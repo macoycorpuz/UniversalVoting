@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using UniversalVoting.EventOrganizerTabs;
 
 namespace UniversalVoting
 {
@@ -19,16 +20,23 @@ namespace UniversalVoting
     /// </summary>
     public partial class EventOrganizerWindow : Window
     {
+     
+        public int _eventid;
 
-        private int _eventid;
         public EventOrganizerWindow()
         {
-            InitializeComponent();
             _eventid = 1;
-            //Forcing to pass a number 1 as Event Id
-            ucjudges.passingidvalue(_eventid);
-            
+
+            InitializeComponent();
+            TabJudges junjun = new TabJudges(_eventid);
+            markpogi.Children.Add(junjun);
+
+           // ucjudges.passingidvalue(_eventid);
+
         }
+
+        public int getID()
+        { return _eventid; }
 
         public EventOrganizerWindow(int event_id)
         {
@@ -36,13 +44,6 @@ namespace UniversalVoting
             _eventid = event_id;
         }
 
-        //using the Database
-        /*
-            IDatabase clsDatabase;                                  //initialize the instance
-            clsDatabase.ExecuteAdapterQuery(tb1.Text.ToString());   //pass the query
-            dg1.ItemsSource = clsDatabase.Data.DefaultView;         //retrieve the data
-         
-         
-         */
+
     }
 }
