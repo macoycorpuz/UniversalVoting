@@ -58,6 +58,7 @@ namespace UniversalVoting.JudgeTabs
 
         private void LoadCriteria()
         {
+
             criteria.Add(new Criteria() { Name = "Questions and Answer" });
             criteria.Add(new Criteria() { Name = "Bikini" });
             criteria.Add(new Criteria() { Name = "Formal" });

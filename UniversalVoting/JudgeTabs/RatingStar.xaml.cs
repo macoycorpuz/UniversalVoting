@@ -28,12 +28,17 @@ namespace UniversalVoting.JudgeTabs
         {
             InitializeComponent();
             LoadImages();
-            //lblRating.Text = intRate.ToString();
+        }
+
+        public void SetRating(int r)
+        {
+            SetImage(r, Visibility.Visible, Visibility.Hidden);
+            Rate = r;
         }
 
         private void LoadImages()
         {
-            for (int i = 1; i <= 10; i++)
+            for (int i = 1; i <= 9; i++)
             {
                 Image img = new Image();
                 img.Name = "imgRate" + i;
@@ -43,6 +48,7 @@ namespace UniversalVoting.JudgeTabs
                 img.Source = new BitmapImage(new Uri(@"\Images\MinusRate.png", UriKind.Relative));
                 img.MouseEnter += imgRateMinus_MouseEnter;
                 pnlMinus.Children.Add(img);
+
 
                 Image img1 = new Image();
                 img1.Name = "imgRate" + i + i;
@@ -56,6 +62,7 @@ namespace UniversalVoting.JudgeTabs
                 img1.MouseLeftButtonUp += imgRatePlus_MouseLeftButtonUp;
                 pnlPlus.Children.Add(img1);
             }
+
         }
 
         private void imgRateMinus_MouseEnter(object sender, MouseEventArgs e)
@@ -110,6 +117,5 @@ namespace UniversalVoting.JudgeTabs
             intRate = Convert.ToInt32(strImgName.Substring(strImgName.Length - 1, 1));
         }
         
-
     }
 }

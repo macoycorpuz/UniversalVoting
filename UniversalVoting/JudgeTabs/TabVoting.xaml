@@ -44,15 +44,16 @@
         </Ellipse>
 
         <DataGrid Name="dtgrdCriteria" 
-                      Grid.Column="0" 
-                      Grid.ColumnSpan="2" 
-                      Grid.Row="1"
-                      Margin="5,0,5,15" 
-                      AutoGenerateColumns="False" 
-                      IsReadOnly="True">
+                  Grid.Column="0" 
+                  Grid.ColumnSpan="2" 
+                  Grid.Row="1"
+                  Margin="5,0,5,15" 
+                  AutoGenerateColumns="False" 
+                  IsReadOnly="True"
+                  ColumnWidth="*">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Criteria" 
-                                        Binding="{Binding Name}"/>
+                                    Binding="{Binding Name}"/>
 
                 <!--Not Sure here -->
                 <DataGridTemplateColumn Header="Rating">
@@ -64,6 +65,9 @@
                 </DataGridTemplateColumn>
                 <!--Not Sure here -->
 
+                <DataGridTextColumn Header="Weight" 
+                                    Binding="{Binding Weight}"
+                                    Width="100"/>
             </DataGrid.Columns>
             <DataGrid.Resources>
                 <Style TargetType="DataGridColumnHeader">
