@@ -318,6 +318,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\3.jpg" />
     <Resource Include="Images\iconWindow.png" />
   </ItemGroup>
   <ItemGroup>
@@ -347,6 +348,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\PlusRate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\2.jpg" />
+    <Resource Include="Images\4.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -14,7 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
-
+using System.Data;
+using System.IO;
 
 namespace UniversalVoting.JudgeTabs
 {
@@ -24,8 +25,8 @@ namespace UniversalVoting.JudgeTabs
     public partial class TabVoting : UserControl
     {
         IDatabase _clsDb;
-        ObservableCollection<Contestant> contestants = new ObservableCollection<Contestant>();
-        ObservableCollection<Contestant> contestantInfo = new ObservableCollection<Contestant>();
+        int _eventjudgejID, _contestantID;
+
         ObservableCollection<Criteria> criteria = new ObservableCollection<Criteria>();
 
         public TabVoting()
@@ -33,20 +34,26 @@ namespace UniversalVoting.JudgeTabs
             InitializeComponent();
         }
 
-        public TabVoting(int ID)
+        public TabVoting(int eventjudgeID, int contestantID)
         {
             InitializeComponent();
-            LoadContestants();
+            imgHere.DataContext = this;
+            _eventjudgejID = eventjudgeID;
+            _contestantID = contestantID;
+            _contestantID = 8;
+            LoadContestant();
             LoadCriteria();
         }
 
-        private void LoadContestants()
+        private void LoadContestant()
         {
             _clsDb = new Database();
-            contestants.Add(new Contestant() { Name = "Kyle Floresta", Status = "1", Avatar = "../Images/iconAvatar.jpg" });
-            contestants.Add(new Contestant() { Name = "Marcuz Corpuz", Status = "", Avatar = "../Images/iconAvatar.jpg" });
-            contestants.Add(new Contestant() { Name = "Lols", Status = "1", Avatar = "../Images/iconAvatar.jpg" });
-            lstContestants.ItemsSource = contestants;
+            _clsDb.ExecuteStoredProc("MCspViewContestant", "@ContestantID", _contestantID);
+            if (_clsDb.Data.Rows.Count > 0)
+            {
+                lblContestantName.Content = _clsDb.Data.Rows[0].Field<int>(0).ToString() + ". " + _clsDb.Data.Rows[0].Field<string>(1) + " " +_clsDb.Data.Rows[0].Field<string>(2);
+                ContestantImage = ProfilePic(_clsDb.Data.Rows[0].Field<int>(3));
+            }
         }
 
         private void LoadCriteria()
@@ -56,72 +63,21 @@ namespace UniversalVoting.JudgeTabs
             criteria.Add(new Criteria() { Name = "Formal" });
             dtgrdCriteria.ItemsSource = criteria;
         }
+
+        private string ProfilePic(int personID)
+        {
+            string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+            string image = personID.ToString() + ".jpg";
+            string strDirectory = System.IO.Path.Combine(dir, "Images", image);
+            if (File.Exists(strDirectory))
+                return strDirectory;
+            else
+                return "../Images/iconAvatar.jpg";
+        }
+
+        public string ContestantImage { get; set; }
     }
-
-
-    #region Contestant Class
-
-    public class Contestant : INotifyPropertyChanged
-    {
-        private string name;
-        private string status;
-        private string avatar;
-
-        public string Name
-        {
-            get { return this.name; }
-            set
-            {
-                if (this.name != value)
-                {
-                    this.name = value;
-                    this.NotifyPropertyChanged("Name");
-                }
-            }
-        }
-
-        public string Status
-        {
-            get
-            {
-                if (this.status == "1")
-                    return "../Images/iconCheck.png";
-                else
-                    return "../Images/iconCircle.png";
-            }
-            set
-            {
-                if (this.status != value)
-                {
-                    this.status = value;
-                    this.NotifyPropertyChanged("Status");
-                }
-            }
-        }
-
-        public string Avatar
-        {
-            get { return this.avatar; }
-            set
-            {
-                if (this.avatar != value)
-                {
-                    this.avatar = value;
-                    this.NotifyPropertyChanged("Avatar");
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void NotifyPropertyChanged(string propName)
-        {
-            if (this.PropertyChanged != null)
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propName));
-        }
-    }
-
-    #endregion
+    
 
     #region Criteria Class
 
