@@ -21,9 +21,7 @@ namespace UniversalVoting
         private bool integratedSecurity = bool.Parse(ConfigurationManager.AppSettings["IntegratedSecurity"]);
         private string userID = ConfigurationManager.AppSettings["UserID"];
         private string password = ConfigurationManager.AppSettings["Password"];
-
-        private SqlConnection sqlCon = null;
-        private SqlConnectionStringBuilder sqlConString = null;
+        
         #endregion
 
         #region Attributes

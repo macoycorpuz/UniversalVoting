@@ -32,8 +32,9 @@ namespace UniversalVoting
             TabCriteria junatahan = new TabCriteria(_eventid);
             markpanget.Children.Add(junatahan);
 
-            TabCriteria jejeboy = new TabCriteria(_eventid);
+            TabContestants jejeboy = new TabContestants(_eventid);
             markewan.Children.Add(jejeboy);
+
 
         }
 

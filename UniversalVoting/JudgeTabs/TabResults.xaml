@@ -7,6 +7,27 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-            
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <ItemsControl Name="myic">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" >
+                            <Image Name="imgsrc" Source="{Binding Path = gender }" Width="150" Height="150"/>
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label  Content="Contestant Name: " FontFamily="Verdana" FontSize="20"/>
+                                    <Label x:Name="contestantName"  Content="{Binding Path = name}" FontFamily="Verdana" FontSize="20"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label  Content="Score: " FontFamily="Verdana"   FontSize="20"/>
+                                    <Label x:Name="contestantScore" Content="{Binding Path = score}" FontFamily="Verdana" FontSize="20"/>
+                                </StackPanel>
+                                <ProgressBar x:Name="contestantScoreBar" Minimum="0" Maximum="100" Value="{Binding Path = scorebar }" Height="15" Width="1000"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>

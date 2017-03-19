@@ -291,8 +291,7 @@ namespace UniversalVoting.EventOrganizerTabs
                 cnameavail.Content = "Criteria Name Taken already";
 
         }
-
-
+        
         private void dgAllCriteria_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dgAllCriteria.SelectedIndex > -1)
