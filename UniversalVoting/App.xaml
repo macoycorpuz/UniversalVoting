@@ -1,8 +1,11 @@
 ﻿<Application x:Class="UniversalVoting.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="EventOrganizerWindow.xaml">
+             StartupUri="JudgeWindow.xaml">
     <Application.Resources>
+        <!--Fonts Used
+        ../Fonts/HelveticaLTStd-Cond.otf#Helvetica LT Std Con
+        -->
         
         <!--Style for Button-->
         <Style TargetType="{x:Type Button}">
@@ -81,11 +84,11 @@
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Center"
                                               ContentSource="Header"
-                                              Margin="10,2"/>
+                                              Margin="20"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Panel" Property="Background" Value="LightSkyBlue" />
+                                <Setter TargetName="Panel" Property="Background" Value="#42aa44" />
                             </Trigger>
                             <Trigger Property="IsSelected" Value="False">
                                 <Setter TargetName="Panel" Property="Background" Value="Transparent" />

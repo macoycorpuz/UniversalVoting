@@ -20,9 +20,7 @@ namespace UniversalVoting
     /// </summary>
     public partial class EventOrganizerWindow : Window
     {
-     
-        public int _eventid;
-
+        private int _eventid;
         public EventOrganizerWindow()
         {
             _eventid = 2;
@@ -47,7 +45,5 @@ namespace UniversalVoting
             InitializeComponent();
             _eventid = event_id;
         }
-
-
     }
 }

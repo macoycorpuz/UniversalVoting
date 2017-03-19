@@ -11,7 +11,7 @@ namespace UniversalVoting
     interface IDatabase
     {
         DataTable Data { get; }
-   
+
         bool HasError { get; }
 
         void ExecuteCommand(string query);

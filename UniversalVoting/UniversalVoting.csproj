@@ -318,9 +318,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="pic.jpg" />
+    <Resource Include="Images\iconWindow.png" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Resource Include="Images\bgLogin.jpeg" />
   </ItemGroup>
