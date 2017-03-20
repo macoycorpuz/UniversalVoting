@@ -47,7 +47,6 @@
                 <ComboBoxItem>Edit</ComboBoxItem>
                 <ComboBoxItem>Add</ComboBoxItem>
                 <ComboBoxItem>Remove from Event</ComboBoxItem>
-                <ComboBoxItem>Delete from Database</ComboBoxItem>
                 <ComboBoxItem>Cancel</ComboBoxItem>
 
             </ComboBox>
@@ -64,7 +63,7 @@
                 </StackPanel>
                 <TextBox x:Name="txbclname" IsEnabled="False" Width="250" FontSize="16" VerticalAlignment="Top" Height="30" KeyUp="txbcfname_KeyDown"/>
             </StackPanel>
-            <Image Source="/images/defaultpicmale.jpg"  Width="200" Height="200"/>
+            <Image x:Name="imgconpic" Source="/images/defaultpicmale.jpg"  Width="200" Height="200"/>
             <Button x:Name="btneditpic" Visibility="Visible"  Content="Edit Picture" FontSize="16" Click="btneditpic_Click"/>
             <Button x:Name="btnjudgeconfirm" Visibility="Hidden"  Content="" FontSize="16" Margin="0,20,0,0" Click="btncontestantconfirm_Click"/>
 

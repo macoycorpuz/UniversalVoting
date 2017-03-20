@@ -21,11 +21,12 @@ namespace UniversalVoting
     public partial class EventOrganizerWindow : Window
     {
         private int _eventid;
-        public EventOrganizerWindow()
+        public EventOrganizerWindow(int k)
         {
-            _eventid = 2;
+            _eventid = k;
 
             InitializeComponent();
+
             TabJudges junjun = new TabJudges(_eventid);
             markpogi.Children.Add(junjun);
 
@@ -35,16 +36,17 @@ namespace UniversalVoting
             TabContestants jejeboy = new TabContestants(_eventid);
             markewan.Children.Add(jejeboy);
 
+            Tabfinalize kiki = new Tabfinalize(_eventid,this);
+            markcantot.Children.Add(kiki);
+
+            //gawa ng taga finalize na window
+
 
         }
 
         public int getID()
         { return _eventid; }
 
-        public EventOrganizerWindow(int event_id)
-        {
-            InitializeComponent();
-            _eventid = event_id;
-        }
+    
     }
 }

@@ -64,6 +64,73 @@
                         FontSize="16"
                         Click="btnRegister_Click"/>
             </StackPanel>
+            
+            <Popup x:Name="popup" 
+                   IsOpen="False" 
+                    
+                   Placement="Center"
+                   Width="500"
+                   Height="300">
+                <Border BorderBrush="Black" 
+                        BorderThickness="5" 
+                        Background="AliceBlue">
+                    
+                    <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="2*"/>
+                                <RowDefinition Height="2*" />
+                                <RowDefinition Height="2*" />
+                                <RowDefinition Height="2*" />
+                                <RowDefinition Height="2*" />
+                                <RowDefinition Height="2*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+
+
+                            <Label Content="Event Organizer Account Creation" Grid.ColumnSpan="3" FontSize="20" FontWeight="Bold"/>
+                            <Label Content="  First Name" Grid.Row="1" FontSize="20"/>
+                            <Label Content="  Last Name"  Grid.Row="2" FontSize="20"/>
+                            <Label Content="  Username" Grid.Row="3" FontSize="20"/>
+                            <Label Content="  Password"  Grid.Row="4" FontSize="20"/>
+                            <Label Content="Event Name: "  Grid.Row="5" FontSize="20"/>
+                            <TextBox x:Name="txbefname" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontSize="20" Margin="0,5,5,5"/>
+                            <TextBox x:Name="txbelname"  Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" FontSize="20" Margin="0,5,5,5"/>
+                            <TextBox x:Name="txbeventuname"  Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" FontSize="20" Margin="0,5,5,5"/>
+                            <TextBox x:Name="txbeventpass"  Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" FontSize="20" Margin="0,5,5,5"/>
+                            <TextBox x:Name="txbeventname"  Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" FontSize="20" Margin="0,5,5,5"/>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <Button x:Name="generateAsBtn" 
+                                        Content="Create Event" 
+                                        Click="generateAsBtn_Click"
+                                        Grid.Column="0" 
+                                        FontSize="20"
+                                        Margin="5"/>
+                            <Button x:Name="cancelbtn" 
+                                        Content="Cancel" 
+                                        Click="cancelbtn_Click"
+                                        Grid.Column="1" 
+                                        FontSize="20"
+                                        Margin="5"/>
+                        </Grid>
+
+ 
+                     
+                        
+                    </StackPanel>
+                </Border>
+            </Popup>
+            
         </StackPanel>
     </Grid>
 </Window>

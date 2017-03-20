@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="UniversalVoting.EventOrganizerTabs.Tabfinalize"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UniversalVoting.EventOrganizerTabs"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".2*"/>
+            <ColumnDefinition Width=".2*"/>
+            <ColumnDefinition Width=".2*"/>
+            <ColumnDefinition Width=".2*"/>
+            <ColumnDefinition Width=".2*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+
+            <RowDefinition Height=".75*"/>
+            <RowDefinition Height="3*"/>
+
+            <RowDefinition Height=".75*"/>
+            <RowDefinition Height="3*"/>
+
+            <RowDefinition Height=".75*"/>
+            <RowDefinition Height="3*"/>
+
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Judges for This Event" Grid.Row="0" FontSize="25" FontWeight="Bold" Grid.ColumnSpan="2" Grid.Column="1"/>
+        <DataGrid  Grid.Row="1"  IsReadOnly="True" IsEnabled="True" ColumnWidth="*" Grid.ColumnSpan="5" Name="dgEventJudges" FontSize="16" SelectionMode="Single"  Margin="5"   />
+
+
+        <Label x:Name="ctotalweight" Grid.Row="2" FontSize="25" FontWeight="Bold" Grid.ColumnSpan="4" Grid.Column="1"/>
+        <DataGrid Grid.Row="3"  IsReadOnly="True" IsEnabled="True" ColumnWidth="*" Grid.ColumnSpan="5" Name="dgEventCriteria" FontSize="16" SelectionMode="Single" Margin="5" />
+
+        <Label Content="Contestants for This Event" Grid.Row="4" FontSize="25" FontWeight="Bold" Grid.ColumnSpan="2" Grid.Column="1"/>
+        <DataGrid  Grid.Row="5"  IsReadOnly="True" IsEnabled="True" ColumnWidth="*" Grid.ColumnSpan="4" Name="dgEventContestants" FontSize="16" SelectionMode="Single"  Margin="5" SelectionChanged="dgEventContestants_SelectionChanged" />
+        <Image x:Name="imgconpic" Source="/images/defaultpicmale.jpg"  Width="200" Height="200" Grid.Row="5" Grid.Column="4"/>
+    
+            <Label Content="Once Finalized, Event Cannot be Altered. " Grid.Row="6" FontSize="18" FontWeight="Bold" Grid.ColumnSpan="2" Grid.Column="0"/>
+        <Button Content="Finalize Event" Grid.Row="6" FontSize="18" FontWeight="Bold" Grid.Column="2" Click="Button_Click"/>
+        <Button Content="Refresh Event" Grid.Row="6" FontSize="18" FontWeight="Bold" Grid.Column="3" Click="Button_Click_1"/>
+
+    </Grid>
+</UserControl>
