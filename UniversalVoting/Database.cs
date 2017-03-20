@@ -14,15 +14,17 @@ namespace UniversalVoting
     class Database : IDatabase, IDisposable
     {
 
- 
-        private string strTitle = ConfigurationManager.AppSettings["Title"];
+        #region Database Configurations
 
-        #region Attributes
         private string dataSource = ConfigurationManager.AppSettings["DataSource"];
         private string initialCatalog = ConfigurationManager.AppSettings["InitialCatalog"];
         private bool integratedSecurity = bool.Parse(ConfigurationManager.AppSettings["IntegratedSecurity"]);
         private string userID = ConfigurationManager.AppSettings["UserID"];
         private string password = ConfigurationManager.AppSettings["Password"];
+        
+        #endregion
+
+        #region Attributes
 
         private SqlConnection sqlCon = null;
         private SqlConnectionStringBuilder sqlConString = null;
@@ -32,9 +34,8 @@ namespace UniversalVoting
         private bool hasError;
 
         /// <summary>
-        /// Returns Connection Error (bool)
+        /// Gets Datatable
         /// </summary>
-
         public DataTable Data
         {
             get { return data; }
@@ -46,17 +47,15 @@ namespace UniversalVoting
             get { return hasError; }
             private set { hasError = value; }
         }
+
         #endregion
 
        #region Constructors
 
-
         public Database()
         {
-
             this.Process();
         }
-
 
         #endregion
 
@@ -80,6 +79,10 @@ namespace UniversalVoting
             this.ConnectionClose();
         }
 
+        /// <summary>
+        /// Executes a Query
+        /// </summary>
+        /// <param name="command"></param>
         public void ExecuteCommand(string query)
         {
             try
@@ -101,7 +104,11 @@ namespace UniversalVoting
             }
         }
 
-     public void ExecuteStoredProc(string query, params object[] args)
+        /// <summary>
+        /// Executes Stored Procedures
+        /// </summary>
+        /// <param name="command"></param>
+        public void ExecuteStoredProc(string query, params object[] args)
         {
             try
             {
@@ -137,9 +144,11 @@ namespace UniversalVoting
                     sqlAdpt.Fill(data);
                 }
                 ConnectionClose();
+                this.HasError = false;
             }
             catch (Exception ex)
             {
+                this.HasError = true;
                 MessageBox.Show("Unable to Execute Stored Procedure!!\n\nError: " + ex.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
             }
         }
@@ -164,17 +173,18 @@ namespace UniversalVoting
                     this.sqlConString.UserID = this.userID;
                     this.sqlConString.Password = this.password;
                 }
-                
+
                 this.sqlCon.ConnectionString = this.sqlConString.ConnectionString;
                 this.sqlCon.Open();
-                
+                this.HasError = false;
             }
             catch (Exception ex)
             {
+                this.HasError = true;
                 MessageBox.Show("Unable to connect database!!\n\nError: " + ex.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
             }
         }
-        
+
         private void ConnectionClose()
         {
             if (this.sqlCon != null)
@@ -188,7 +198,6 @@ namespace UniversalVoting
                 this.sqlCon = null;
             }
         }
-
 
         #endregion
     }

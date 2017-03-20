@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:UniversalVoting"
         xmlns:myusercontrol="clr-namespace:UniversalVoting.EventOrganizerTabs" 
         mc:Ignorable="d"
-        Title="EventOrganizerWindow" WindowState="Maximized">
+        Title="EventOrganizerWindow" WindowState="Maximized" MinHeight="700" MinWidth="1100" Icon="/Images/iconWindow.png">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="24"/>
@@ -33,16 +33,7 @@
                 <Grid Name="markpogi"/>
             </TabItem>
             
-            <TabItem Name="tabItemContestants">
-                <TabItem.Header>
-                    <StackPanel>
-                        <Image Source="/Images/iconResults.png" Height="70"  Width="70"/>
-                        <TextBlock Text="Contestants"/>
-                    </StackPanel>
-                </TabItem.Header>
-                <myusercontrol:TabContestants/>
-                
-            </TabItem>
+
             <TabItem Name="tabItemCriteria">
                 <TabItem.Header>
                     <StackPanel>
@@ -50,7 +41,18 @@
                         <TextBlock Text="Criteria"/>
                     </StackPanel>
                 </TabItem.Header>
-                <myusercontrol:TabCriteria/>
+                <Grid Name="markpanget"/>
+            </TabItem>
+
+            <TabItem Name="tabItemContestants">
+                <TabItem.Header>
+                    <StackPanel>
+                        <Image Source="/Images/iconResults.png" Height="70"  Width="70"/>
+                        <TextBlock Text="Contestants"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid Name="markewan"/>
+
             </TabItem>
 
         </TabControl>

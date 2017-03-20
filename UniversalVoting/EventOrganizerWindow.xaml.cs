@@ -20,18 +20,21 @@ namespace UniversalVoting
     /// </summary>
     public partial class EventOrganizerWindow : Window
     {
-     
-        public int _eventid;
-
+        private int _eventid;
         public EventOrganizerWindow()
         {
-            _eventid = 1;
+            _eventid = 2;
 
             InitializeComponent();
             TabJudges junjun = new TabJudges(_eventid);
             markpogi.Children.Add(junjun);
 
-           // ucjudges.passingidvalue(_eventid);
+            TabCriteria junatahan = new TabCriteria(_eventid);
+            markpanget.Children.Add(junatahan);
+
+            TabContestants jejeboy = new TabContestants(_eventid);
+            markewan.Children.Add(jejeboy);
+
 
         }
 
@@ -43,7 +46,5 @@ namespace UniversalVoting
             InitializeComponent();
             _eventid = event_id;
         }
-
-
     }
 }
