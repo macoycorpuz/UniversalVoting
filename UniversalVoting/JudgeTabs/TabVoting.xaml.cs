@@ -14,7 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
-
+using System.Data;
+using System.IO;
 
 namespace UniversalVoting.JudgeTabs
 {
@@ -23,197 +24,123 @@ namespace UniversalVoting.JudgeTabs
     /// </summary>
     public partial class TabVoting : UserControl
     {
-        ObservableCollection<Contestant> contestants = new ObservableCollection<Contestant>();
-        ObservableCollection<Contestant> contestantInfo = new ObservableCollection<Contestant>();
-        ObservableCollection<Criteria> criteria = new ObservableCollection<Criteria>();
+        #region Attributes
 
+        IDatabase _clsDb;
+        int _eventjudgejID, _contestantID;
+        ObservableCollection<Criteria> _criteria;
+        DataTable _criteriaDT;
+        DataTable _scoreDT;
+
+        #endregion
 
         public TabVoting()
         {
             InitializeComponent();
-            LoadContestants();
-            LoadCriteria();
-            //Try lang
-            //Try Commit kay KyleWork1 (add code tapos lagay karin comments para cool) hahaha
         }
 
-        private void LoadContestants()
+        public TabVoting(int eventjudgeID, int contestantID)
         {
-            contestants.Add(new Contestant() { Name = "Kyle Floresta", Status = "1", Avatar = "../Images/iconAvatar.jpg" });
-            contestants.Add(new Contestant() { Name = "Marcuz Corpuz", Status = "", Avatar = "../Images/iconAvatar.jpg" });
-            contestants.Add(new Contestant() { Name = "Lols", Status = "1", Avatar = "../Images/iconAvatar.jpg" });
+            InitializeComponent();
+            imgHere.DataContext = this;
+            _eventjudgejID = eventjudgeID;
+            _contestantID = contestantID;
+            LoadContestant();
+            LoadCriteria();
+        }
 
+        private void dtgrdCriteria_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                object item = dtgrdCriteria.SelectedItem;
+                string name = (dtgrdCriteria.SelectedCells[0].Column.GetCellContent(item) as TextBlock).Text;
 
-            lstContestants.ItemsSource = contestants;
+                _clsDb.ExecuteStoredProc("[MCspGetEventCriteriaID]", "@Name", name, "@EventJudgeID", _eventjudgejID);
+                int EventCriteriaID = _clsDb.Data.Rows[0].Field<int>(0);
+                _clsDb = new Database();
+                _clsDb.ExecuteStoredProc("[MCspViewScore]", "@EventJudgeID", _eventjudgejID, "@ContestantID", _contestantID, "@EventCriteriaID", EventCriteriaID.ToString());
+                int _rate = Convert.ToInt32(_clsDb.Data.Rows[0].ItemArray.GetValue(0).ToString());
+                pnlRateHere.Children.Clear();
+                RatingStar rs = new RatingStar(_rate, false, _eventjudgejID, _contestantID, EventCriteriaID);
+                Label lblCriteria = new Label();
+                lblCriteria.VerticalAlignment = VerticalAlignment.Center;
+                lblCriteria.Margin = new Thickness(10);
+                lblCriteria.FontFamily = new FontFamily("../Fonts/Helvetica.otf#Helvetica");
+                lblCriteria.FontSize = 21;
+                lblCriteria.Content = name;
+                pnlRateHere.Children.Add(lblCriteria);
+                pnlRateHere.Children.Add(rs);
+            }
+            catch 
+            {
+            }
+
+        }
+
+        private void btnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            LoadCriteria();
+        }
+
+        private string ProfilePic(int personID)
+        {
+            string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+            string image = personID.ToString() + ".jpg";
+            string strDirectory = System.IO.Path.Combine(dir, "Images", image);
+            if (File.Exists(strDirectory))
+                return strDirectory;
+            else
+                return "../Images/iconAvatar.jpg";
+        }
+
+        public string ContestantImage { get; set; }
+
+        #region Load Items
+
+        private void LoadContestant()
+        {
+            _clsDb = new Database();
+            _clsDb.ExecuteStoredProc("MCspViewContestant", "@ContestantID", _contestantID);
+            if (_clsDb.Data.Rows.Count > 0)
+            {
+                lblContestantName.Content = _clsDb.Data.Rows[0].Field<int>(0).ToString() + ". " + _clsDb.Data.Rows[0].Field<string>(1) + " " +_clsDb.Data.Rows[0].Field<string>(2);
+                ContestantImage = ProfilePic(_clsDb.Data.Rows[0].Field<int>(3));
+            }
         }
 
         private void LoadCriteria()
         {
-            criteria.Add(new Criteria() { Name = "Questions and Answer" });
-            criteria.Add(new Criteria() { Name = "Bikini" });
-            criteria.Add(new Criteria() { Name = "Formal" });
+            _criteria = new ObservableCollection<Criteria>();
+            _criteriaDT = new DataTable();
+            _clsDb = new Database();
 
-            dtgrdCriteria.ItemsSource = criteria;
+            _clsDb.ExecuteStoredProc("[MCspViewCriteria]", "@EventJudgeID", _eventjudgejID.ToString());
+            if (_clsDb.Data.Rows.Count > 0)
+                _criteriaDT = _clsDb.Data;
+
+            foreach (DataRow c in _criteriaDT.Rows)
+            {
+                _clsDb.ExecuteStoredProc("[MCspViewScore]", "@EventJudgeID", _eventjudgejID.ToString(), "@ContestantID", _contestantID.ToString(), "@EventCriteriaID", c.Field<int>(2).ToString());
+                if (_clsDb.Data.Rows.Count > 0)
+                    _criteria.Add(new Criteria() { Name = c.Field<string>(0), Score = Convert.ToInt32(_clsDb.Data.Rows[0].Field<double>(0)), Weight = c.Field<double>(1) });
+                else
+                    _criteria.Add(new Criteria() { Name = c.Field<string>(0), Score = 0, Weight = c.Field<double>(1) });
+            }
+
+            dtgrdCriteria.ItemsSource = _criteria;
         }
-
-        #region Rating
-
-        //int intRate = 0;
-        //int intCount = 1;
-        //int Rate = 0;
-
-        //private void LoadImages()
-        //{
-        //    for (int i = 1; i <= 5; i++)
-        //    {
-        //        Image img = new Image();
-        //        img.Name = "imgRate" + i;
-        //        img.Stretch = Stretch.UniformToFill;
-        //        img.Height = 25;
-        //        img.Width = 25;
-        //        img.Source = new BitmapImage(new Uri(@"\Images\MinusRate.png", UriKind.Relative));
-        //        img.MouseEnter += imgRateMinus_MouseEnter;
-        //        pnlMinus.Children.Add(img);
-
-        //        Image img1 = new Image();
-        //        img1.Name = "imgRate" + i + i;
-        //        img1.Stretch = Stretch.UniformToFill;
-        //        img1.Height = 25;
-        //        img1.Width = 25;
-        //        img1.Visibility = Visibility.Hidden;
-        //        img1.Source = new BitmapImage(new Uri(@"\Images\PlusRate.png", UriKind.Relative));
-        //        img1.MouseEnter += imgRatePlus_MouseEnter;
-        //        img1.MouseLeave += imgRatePlus_MouseLeave;
-        //        img1.MouseLeftButtonUp += imgRatePlus_MouseLeftButtonUp;
-        //        pnlPlus.Children.Add(img1);
-        //    }
-        //}
-
-        //private void imgRateMinus_MouseEnter(object sender, MouseEventArgs e)
-        //{
-        //    GetData(sender, Visibility.Visible, Visibility.Hidden);
-        //}
-
-        //private void imgRatePlus_MouseEnter(object sender, MouseEventArgs e)
-        //{
-        //    GetData(sender, Visibility.Visible, Visibility.Hidden);
-        //}
-
-        //private void imgRatePlus_MouseLeave(object sender, MouseEventArgs e)
-        //{
-        //    GetData(sender, Visibility.Hidden, Visibility.Visible);
-        //}
-
-        //private void gdRating_MouseLeave(object sender, MouseEventArgs e)
-        //{
-        //    SetImage(Rate, Visibility.Visible, Visibility.Hidden);
-        //}
-
-        //private void GetData(object sender, Visibility imgYellowVisibility, Visibility imgGrayVisibility)
-        //{
-        //    GetRating(sender as Image);
-        //    SetImage(intRate, imgYellowVisibility, imgGrayVisibility);
-        //}
-
-        //private void SetImage(int intRate, Visibility imgYellowVisibility, Visibility imgGrayVisibility)
-        //{
-        //    foreach (Image imgItem in pnlPlus.Children.OfType<Image>())
-        //    {
-        //        if (intCount <= intRate)
-        //            imgItem.Visibility = imgYellowVisibility;
-        //        else
-        //            imgItem.Visibility = imgGrayVisibility;
-        //        intCount++;
-        //    }
-        //    intCount = 1;
-        //}
-
-        //private void imgRatePlus_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        //{
-        //    GetRating(sender as Image);
-        //    Rate = intRate;
-        //    //lblRating.Text = intRate.ToString();
-        //}
-
-        //private void GetRating(Image Img)
-        //{
-        //    string strImgName = Img.Name;
-        //    intRate = Convert.ToInt32(strImgName.Substring(strImgName.Length - 1, 1));
-        //}
 
         #endregion
     }
-
-
-    #region Contestant Class
-
-    public class Contestant : INotifyPropertyChanged
-    {
-        private string name;
-        private string status;
-        private string avatar;
-
-        public string Name
-        {
-            get { return this.name; }
-            set
-            {
-                if (this.name != value)
-                {
-                    this.name = value;
-                    this.NotifyPropertyChanged("Name");
-                }
-            }
-        }
-
-        public string Status
-        {
-            get
-            {
-                if (this.status == "1")
-                    return "../Images/iconCheck.png";
-                else
-                    return "../Images/iconCircle.png";
-            }
-            set
-            {
-                if (this.status != value)
-                {
-                    this.status = value;
-                    this.NotifyPropertyChanged("Status");
-                }
-            }
-        }
-
-        public string Avatar
-        {
-            get { return this.avatar; }
-            set
-            {
-                if (this.avatar != value)
-                {
-                    this.avatar = value;
-                    this.NotifyPropertyChanged("Avatar");
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void NotifyPropertyChanged(string propName)
-        {
-            if (this.PropertyChanged != null)
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propName));
-        }
-    }
-
-    #endregion
-
+    
     #region Criteria Class
 
     public class Criteria : INotifyPropertyChanged
     {
         private string name;
+        private double weight;
+        private int score;
 
         public string Name
         {
@@ -227,7 +154,47 @@ namespace UniversalVoting.JudgeTabs
                 }
             }
         }
-        
+
+        public Grid Rating
+        {
+            get { return LoadRating(); }
+        }
+
+        public double Weight
+        {
+            get { return this.weight; }
+            set
+            {
+                if (this.weight != value)
+                {
+                    this.weight = value;
+                    this.NotifyPropertyChanged("Weight");
+                }
+            }
+        }
+
+        public int Score
+        {
+            get { return this.score; }
+            set
+            {
+                if (this.score != value)
+                {
+                    this.score = value;
+                    this.NotifyPropertyChanged("Score");
+                }
+            }
+        }
+
+        public Grid LoadRating()
+        {
+            Grid _grd = new Grid();
+            RatingStar rs = new RatingStar(score, true, 0, 0, 0);
+            _grd.Children.Add(rs);   
+            return _grd;
+        }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void NotifyPropertyChanged(string propName)

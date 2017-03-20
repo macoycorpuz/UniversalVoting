@@ -7,6 +7,11 @@
         mc:Ignorable="d"
         Title="Universal Voting System Application" WindowState="Maximized" MinHeight="700" MinWidth="1100" Icon="/Images/iconWindow.png">
     <Grid>
+        <!--Fonts 
+        
+        ../Fonts/HelveticaLTStd-Bold.otf#Helvetica LT Std Bold
+        ../Fonts/Helvetica-Narrow.otf#Helvetica Narrow
+        -->
         <Grid.Background>
             <ImageBrush ImageSource="/Images/bgLogin.jpeg" Stretch="UniformToFill" Opacity="0.85"/>
         </Grid.Background>

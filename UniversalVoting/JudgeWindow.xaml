@@ -3,41 +3,244 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:UniversalVoting"
         xmlns:usrctrl="clr-namespace:UniversalVoting.JudgeTabs"
-        Title="Universal Voting System Application" WindowState="Maximized" >
+        Title="Universal Voting System Application" 
+        MinHeight="700" 
+        MinWidth="1100" 
+        Icon="/Images/iconWindow.png"
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
-        <Style TargetType="TextBlock">
-            <Setter Property="FontSize" Value="24"/>
-            <Setter Property="FontFamily" Value="../Fonts/HelveticaLTStd-Lightotf#Helvetica LT Std Light"/>
-            <Setter Property="FontWeight" Value="Medium"/>
+        <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="30" />
+                </Grid.ColumnDefinitions>
+                <Border x:Name="Border" 
+                          Grid.ColumnSpan="2"
+                          CornerRadius="0"
+                          Background="#FF3F3F3F"
+                          BorderBrush="#FF97A0A5"
+                          BorderThickness="1" />
+                <Border Grid.Column="0"
+                        CornerRadius="0" 
+                        Margin="1" 
+                        Background="#FF3F3F3F" 
+                        BorderBrush="#FF97A0A5"
+                        BorderThickness="0,0,1,0" />
+                <Path x:Name="Arrow"
+                        Grid.Column="1"     
+                        Fill="White"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"/>
+            </Grid>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="ComboBoxTextBox" TargetType="{x:Type TextBox}">
+            <Border x:Name="PART_ContentHost" Focusable="False" Background="{TemplateBinding Background}" />
+        </ControlTemplate>
+
+        <Style x:Key="{x:Type ComboBox}" TargetType="{x:Type ComboBox}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="MinHeight" Value="20"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBox}">
+                        <Grid>
+                            <ToggleButton Name="ToggleButton" 
+                                          Template="{StaticResource ComboBoxToggleButton}" 
+                                          Grid.Column="2" 
+                                          Focusable="false"
+                                          IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}"
+                                          ClickMode="Press">
+                            </ToggleButton>
+                            <ContentPresenter Name="ContentSite" 
+                                              IsHitTestVisible="False"  
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              Margin="3,3,23,3"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center" />
+                            <TextBox x:Name="PART_EditableTextBox"
+                                           Style="{x:Null}" 
+                                           Template="{StaticResource ComboBoxTextBox}" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center" 
+                                           Margin="3,3,23,3"
+                                           Focusable="True" 
+                                           Background="#FF3F3F3F"
+                                           Foreground="Green"
+                                           Visibility="Hidden"
+                                           IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            <Popup Name="Popup"
+                                   Placement="Bottom"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True" 
+                                   Focusable="False"
+                                   PopupAnimation="Slide">
+
+                                <Grid Name="DropDown"
+                                      SnapsToDevicePixels="True"                
+                                      MinWidth="{TemplateBinding ActualWidth}"
+                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder"
+                                            Background="#FF3F3F3F"
+                                            BorderThickness="1"
+                                            BorderBrush="#888888"/>
+                                    <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasItems" Value="false">
+                                <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="#888888"/>
+                            </Trigger>
+                            <Trigger Property="IsGrouping" Value="true">
+                                <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                            </Trigger>
+                            <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
+                                <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="0"/>
+                                <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0"/>
+                            </Trigger>
+                            <Trigger Property="IsEditable"  Value="true">
+                                <Setter Property="IsTabStop" Value="false"/>
+                                <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- SimpleStyles: ComboBoxItem -->
+        <Style x:Key="{x:Type ComboBoxItem}" TargetType="{x:Type ComboBoxItem}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                        <Border Name="Border"
+                                Padding="2"
+                                SnapsToDevicePixels="true">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="#FF4F4F4F"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="#888888"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
-    <Grid>
-        <Grid.Background>
-            <ImageBrush ImageSource="/Images/bgLogin.jpeg" Stretch="UniformToFill" Opacity="0.85"/>
-        </Grid.Background>
-        <TabControl Name="tabctrlJudge" TabStripPlacement="Left">
+    <Grid Background="#4286f4">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".3*"/>
+            <ColumnDefinition Width=".7*"/>
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height=".2*"/>
+                <RowDefinition Height=".8*"/>
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <TextBlock Name="txtJudge"
+                           TextWrapping="Wrap"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="24" 
+                           FontFamily="../Fonts/HelveticaLTStd-Bold.otf#Helvetica LT Std Bold"
+                           Foreground="Black"
+                           Margin="0,10,0,10"/>
+                <Label Content="Choose Event: " 
+                       FontSize="18" 
+                       FontFamily="../Fonts/HelveticaLTStd-Bold.otf#Helvetica LT Std Bold"
+                       Foreground="Black"/>
+                <ComboBox Name="cbxEvent"
+                          FontFamily="../Fonts/HelveticaLTStd-Bold.otf#Helvetica LT Std Bold"
+                          FontWeight="Medium"
+                          FontSize="18"
+                          Background="#4ac94c"
+                          SelectionChanged="cbxEvent_SelectionChanged"
+                          Height="40"
+                          Margin="5"/>
+            </StackPanel>
+            <GroupBox Grid.Row="1"
+                      Header="Parcipants" 
+                      FontSize="18" 
+                      FontFamily="../Fonts/HelveticaLTStd-Bold.otf#Helvetica LT Std Bold"
+                      Foreground="Black">
+                <ListView Name="lstContestants"
+                          Margin="5"
+                          Background="#d6e5ff"
+                          SelectionChanged="lstContestants_SelectionChanged_1">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width=".1*"/>
+                                    <ColumnDefinition Width=".5*"/>
+                                    <ColumnDefinition Width=".4*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Source="{Binding Status}" Width="20" Height="20"/>
+                                <Image Source="{Binding Avatar}" Width="50" Height="50" Grid.Column="1"/>
+                                <TextBlock Name="txtName" Text="{Binding Name}" 
+                                           Grid.Column="2" 
+                                           FontFamily="../Fonts/HelveticaLTStd-Bold.otf#Helvetica LT Std Bold"
+                                           FontSize="14"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Margin="5,0,0,0"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListViewItem_OnConversationClick" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </GroupBox>
+        </Grid>
+        <TabControl Name="tabctrlJudge" Grid.Column="1">
             <TabControl.Background>
-                <ImageBrush ImageSource="/Images/bgTabControl.jpg" Stretch="UniformToFill" Opacity="0.85"/>
+                <ImageBrush ImageSource="/Images/bgTabControl.jpg" Stretch="UniformToFill"/>
             </TabControl.Background>
             <TabItem Name="tabItemVoting">
                 <TabItem.Header>
                     <StackPanel>
-                        <Image Source="/Images/iconVoting.png" Height="70"  Width="70"/>
-                        <TextBlock Text="Voting"/>
+                        <Image Source="/Images/iconVoting.png" Height="30"  Width="30"/>
                     </StackPanel>
                 </TabItem.Header>
-                <usrctrl:TabVoting/>
+                <Grid Name="UserVotingTab"/>
             </TabItem>
             <TabItem Name="tabItemResults">
                 <TabItem.Header>
                     <StackPanel>
-                        <Image Source="/Images/iconResults.png" Height="70"  Width="70"/>
-                        <TextBlock Text="Results"/>
+                        <Image Source="/Images/iconResults.png" Height="30"  Width="30"/>
                     </StackPanel>
                 </TabItem.Header>
-                <usrctrl:TabResults/>
+                <Grid Name="UserResultsTab"/>
             </TabItem>
         </TabControl>
-        
     </Grid>
 </Window>

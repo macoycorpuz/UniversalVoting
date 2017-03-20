@@ -84,11 +84,11 @@
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Center"
                                               ContentSource="Header"
-                                              Margin="10,2"/>
+                                              Margin="20"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Panel" Property="Background" Value="LightSkyBlue" />
+                                <Setter TargetName="Panel" Property="Background" Value="#68a2ff" />
                             </Trigger>
                             <Trigger Property="IsSelected" Value="False">
                                 <Setter TargetName="Panel" Property="Background" Value="Transparent" />
