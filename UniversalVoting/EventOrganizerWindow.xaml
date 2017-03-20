@@ -52,7 +52,16 @@
                     </StackPanel>
                 </TabItem.Header>
                 <Grid Name="markewan"/>
+            </TabItem>
 
+            <TabItem Name="tabItemFinalize">
+                <TabItem.Header>
+                    <StackPanel>
+                        <Image Source="/Images/iconResults.png" Height="70"  Width="70"/>
+                        <TextBlock Text="Finalize"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid Name="markcantot"/>
             </TabItem>
 
         </TabControl>

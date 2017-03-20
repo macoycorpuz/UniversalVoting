@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,6 @@ namespace UniversalVoting.EventOrganizerTabs
     /// </summary>
     public partial class TabContestants : System.Windows.Controls.UserControl
     {
-       
         private int _tabeventid;
         IDatabase clsDatabase;
 
@@ -52,13 +52,15 @@ namespace UniversalVoting.EventOrganizerTabs
                 txbclname.Text = dataRow[1].ToString();
                 txbclname.IsEnabled = true;
                 txbcfname.IsEnabled = true;
-                
+                btneditpic.Visibility = Visibility.Visible;
             }
-             //Get PersonID
-             //Check kung may Picture nung PersonID
-             //Kung wala, use Default generic Picture
-             //Kung merong Picture , Use Picture
-                
+            if(cmbjudgeoptions.SelectedIndex==1)
+            {
+
+                btneditpic.Visibility = Visibility.Hidden;
+            }
+            checkpicture();
+
 
         }
 
@@ -68,16 +70,24 @@ namespace UniversalVoting.EventOrganizerTabs
 
             if (cmbjudgeoptions.SelectedIndex == 0)
             {
-                #region edit           
+                #region edit      
+                if (dgEventContestants.SelectedIndex == -1)
+                    return;
+
+                if (!checkfields())
+                {
+                    System.Windows.MessageBox.Show("One or More fields is not filled up.");
+                    return;
+                }
+
+
                 if (cnameavail.Content.ToString() == "Contestant Name Taken already")
                 {
                     System.Windows.MessageBox.Show("Contestant already taken..");
                     return;
                 }
 
-                if (dgEventContestants.SelectedIndex == -1)
-                    return;
-                
+
 
                 dataRow = (DataRowView)dgEventContestants.SelectedItem;
                 clsDatabase = new Database();
@@ -100,7 +110,6 @@ namespace UniversalVoting.EventOrganizerTabs
                     System.Windows.MessageBox.Show("Save Success");
                 }
                 RefreshDataGrids();
-                //Save ID picture
                 #endregion
             }
             else if (cmbjudgeoptions.SelectedIndex == 1)
@@ -112,8 +121,14 @@ namespace UniversalVoting.EventOrganizerTabs
                     return;
                 }
 
-              
-                dataRow = (DataRowView)dgEventContestants.SelectedItem;
+                if (!checkfields())
+                {
+                    System.Windows.MessageBox.Show("One or More fields is not filled up.");
+                    return;
+                }
+
+
+                //dataRow = (DataRowView)dgEventContestants.SelectedItem;
 
                 clsDatabase = new Database();
                 clsDatabase.ExecuteStoredProc("KFspAddPersonToContestant",
@@ -137,6 +152,7 @@ namespace UniversalVoting.EventOrganizerTabs
 
                 if (dgEventContestants.SelectedIndex == -1)
                     return;
+
                 dataRow = (DataRowView)dgEventContestants.SelectedItem;
 
                 String s = "Confirm Removing Contestant from Event \n\nFirstname: \t" + dataRow[0].ToString() + "\n\nLastname: \t" + dataRow[1].ToString();
@@ -156,39 +172,10 @@ namespace UniversalVoting.EventOrganizerTabs
                 }
                 #endregion
             }
-            else if (cmbjudgeoptions.SelectedIndex == 3)
-            {
-                #region delete from database
 
-                if (dgEventContestants.SelectedIndex == -1)
-                    return;
-                dataRow = (DataRowView)dgEventContestants.SelectedItem;
-
-                String s = "Confirm Removing Contestant from Database?? \n\nFirst Name: \t" + dataRow[0].ToString() + "\nLast Name: \t" + dataRow[1].ToString();
-
-                DialogResult dialogResult = System.Windows.Forms.MessageBox.Show(s, "Warning", MessageBoxButtons.YesNo);
-
-                if (dialogResult == DialogResult.Yes)
-                {
-                    clsDatabase = new Database();
-                    clsDatabase.ExecuteStoredProc("KFspRemoveContsestantFromDatabase",
-                    "@fname", dataRow[0].ToString(),
-                    "@lname", dataRow[1].ToString(),
-                    "@_eventid", _tabeventid);
-
-                    if (!(clsDatabase.HasError))
-                    {
-                        System.Windows.MessageBox.Show("Deletion Successful");
-                        cmbjudgeoptions.SelectedIndex = -1;
-                        dgEventContestants.IsEnabled = true;
-                        RefreshDataGrids();
-                        dgEventContestants.IsEnabled = false;
-                    }
-                }
-                #endregion
-            }
+            else
             cmbcontestantoptions_SelectionChanged();
-
+            disableall();
         }
 
         public void RefreshDataGrids()
@@ -260,6 +247,7 @@ namespace UniversalVoting.EventOrganizerTabs
                 txbclname.IsEnabled = true;
                 txbcfname.IsEnabled = true;
                 btnjudgeconfirm.Visibility = Visibility.Visible;
+                btneditpic.Visibility = Visibility.Hidden;
                 btnjudgeconfirm.Content = "Add";
             }
             else if (cmbjudgeoptions.SelectedIndex == 2)
@@ -282,7 +270,9 @@ namespace UniversalVoting.EventOrganizerTabs
             {
                 cmbjudgeoptions.SelectedIndex = -1;
                 btnjudgeconfirm.Visibility = Visibility.Hidden;
+                disableall();
             }
+          
         }
         
         private void dgAllContestants_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -292,14 +282,126 @@ namespace UniversalVoting.EventOrganizerTabs
             else
                 btnaddexisting.IsEnabled = false;
         }
+        
+        public static ImageSource BitmapFromUri(Uri source)
+        {
+            var bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.UriSource = source;
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.EndInit();
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+            return bitmap;
+        }
 
         private void btneditpic_Click(object sender, RoutedEventArgs e)
+
         {
-            //open file explorer for picture
-            //select a picture
-            //copy picture and place in github folder/images
-            //save as PersonID
-            //then update Picture Control
+            if (dgEventContestants.SelectedIndex == -1)
+                return;
+            try
+            {
+                DataRowView dataRow = (DataRowView)dgEventContestants.SelectedItem;
+                clsDatabase = new Database();
+                clsDatabase.ExecuteStoredProc("KFspCheckConExistance",
+                    "@fname", dataRow[0].ToString(),
+                    "@lname", dataRow[1].ToString(),
+                    "@_eventid", _tabeventid);
+
+                string personid = clsDatabase.Data.Rows[0].ItemArray.GetValue(0).ToString();       
+
+                string imagetpathstr;
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "JPEG Files (*.jpg)|*.jpg";
+                openFileDialog.ShowDialog();
+                if ((openFileDialog.FileName == null) || (openFileDialog.FileName == ""))
+                    throw new Exception();
+
+                imagetpathstr = openFileDialog.FileName;               //gets file location na gusto gamitin
+                moveimagefromsource(imagetpathstr,personid);         //paglipat nung file from outside to solution folder
+                imgconpic.Source = null;
+            }
+            catch (Exception)
+            {
+                System.Windows.MessageBox.Show("Error Occured during Image Selection");
+            }
+            checkpicture();
         }
+        
+        private void checkpicture()
+        {
+            string imagepath;
+            if (dgEventContestants.SelectedIndex > -1)
+            {
+
+                DataRowView dataRow = (DataRowView)dgEventContestants.SelectedItem;
+                clsDatabase = new Database();
+                clsDatabase.ExecuteStoredProc("KFspCheckConExistance",
+                    "@fname", dataRow[0].ToString(),
+                    "@lname", dataRow[1].ToString(),
+                    "@_eventid", _tabeventid);
+
+                string personid = clsDatabase.Data.Rows[0].ItemArray.GetValue(0).ToString();         //DITO ILALAGAY PERSON ID
+
+                 imagepath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "/Images";        //ito yung folder na kukunin yung image
+
+                if (File.Exists(imagepath + "/personpic" + personid + ".jpg"))        //verifies kung may pic na talaga
+                    imagepath += "/personpic" + personid + ".jpg";
+                else
+                    imagepath += "/defaultpicmale.jpg";                                //pag walang pic, gamitin yung default
+            }
+            else
+            {
+                 imagepath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "/Images/defaultpicmale.jpg";
+            }
+            ImageSource imageSrc = BitmapFromUri(new Uri(imagepath)).Clone();
+            imgconpic.Source = imageSrc;
+
+        }
+        
+        public void moveimagefromsource(string src,string personid)
+        {
+
+
+            string des;                  
+            des = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\Images";    //checks muna kung meron na Directory nung Images
+
+            if (!Directory.Exists(src))
+                Directory.CreateDirectory(des);                 //checking part
+
+            des += "\\personpic"+personid+".jpg";              
+            
+            if (!File.Exists(des))                              //checking part kung existing na yung pic
+                File.Create(des).Close();                       //create a null .jpg file
+
+            File.Copy(src, des, true);                          //then copy from other folder to solution folder
+
+        }
+
+        private bool checkfields()
+        {
+            if (txbcfname.Text == "")
+                return false;
+            if (txbclname.Text == "")
+                return false;
+            return true;
+        }
+
+        private void disableall()
+        {
+            dgEventContestants.SelectedIndex = -1;
+            dgEventContestants.IsEnabled = false;
+            txbcfname.IsEnabled = false;
+            txbclname.IsEnabled = false;
+            btnjudgeconfirm.Visibility = Visibility.Hidden;
+            cnameavail.Content = "";
+            cmbjudgeoptions.SelectedIndex = -1;
+            btneditpic.Visibility = Visibility.Hidden;
+            checkpicture();
+
+        }
+
+
     }
 }

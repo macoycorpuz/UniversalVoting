@@ -49,7 +49,6 @@
                 <ComboBoxItem>Edit</ComboBoxItem>
                 <ComboBoxItem>Add</ComboBoxItem>
                 <ComboBoxItem>Remove from Event</ComboBoxItem>
-                <ComboBoxItem>Delete from Database</ComboBoxItem>
                 <ComboBoxItem>Cancel</ComboBoxItem>
 
             </ComboBox>
