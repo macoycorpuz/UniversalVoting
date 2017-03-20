@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using UniversalVoting.EventOrganizerTabs;
 
 namespace UniversalVoting
 {
@@ -22,8 +23,23 @@ namespace UniversalVoting
         private int _eventid;
         public EventOrganizerWindow()
         {
+            _eventid = 2;
+
             InitializeComponent();
+            TabJudges junjun = new TabJudges(_eventid);
+            markpogi.Children.Add(junjun);
+
+            TabCriteria junatahan = new TabCriteria(_eventid);
+            markpanget.Children.Add(junatahan);
+
+            TabContestants jejeboy = new TabContestants(_eventid);
+            markewan.Children.Add(jejeboy);
+
+
         }
+
+        public int getID()
+        { return _eventid; }
 
         public EventOrganizerWindow(int event_id)
         {

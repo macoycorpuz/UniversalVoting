@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Configuration;
 using System.Windows;
 
+
 namespace UniversalVoting
 {
     class Database : IDatabase, IDisposable
@@ -20,7 +21,7 @@ namespace UniversalVoting
         private bool integratedSecurity = bool.Parse(ConfigurationManager.AppSettings["IntegratedSecurity"]);
         private string userID = ConfigurationManager.AppSettings["UserID"];
         private string password = ConfigurationManager.AppSettings["Password"];
-
+        
         #endregion
 
         #region Attributes
@@ -49,7 +50,7 @@ namespace UniversalVoting
 
         #endregion
 
-        #region Constructors
+       #region Constructors
 
         public Database()
         {

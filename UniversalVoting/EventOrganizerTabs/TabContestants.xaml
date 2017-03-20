@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="UniversalVoting.EventOrganizerTabs.TabContestants"
+﻿    <UserControl x:Class="UniversalVoting.EventOrganizerTabs.TabContestants"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,6 +7,69 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+                <RowDefinition Height=".7*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height=".7*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Label Content="Contestants for This Event" Grid.Row="4" FontSize="25" FontWeight="Bold" Grid.ColumnSpan="3"/>
+            <DataGrid Grid.Column="0" Grid.Row="5" Grid.RowSpan="5" IsReadOnly="True" IsEnabled="False" ColumnWidth="*" Grid.ColumnSpan="3" Name="dgEventContestants" FontSize="20" SelectionMode="Single" SelectionChanged="dgEventContestants_SelectionChanged"  />
+        <Label Content="All Contestants Available"  FontSize="25" FontWeight="Bold"  Grid.ColumnSpan="2"/>
+            <DataGrid Grid.Column="0" Grid.Row="1" Grid.RowSpan="3" IsReadOnly="True" IsEnabled="True" ColumnWidth="*" Grid.ColumnSpan="3" Name="dgAllContestants" FontSize="20" SelectionMode="Single" SelectionChanged="dgAllContestants_SelectionChanged" />
+
+            <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="3" Grid.RowSpan="2">
+                <TextBlock FontSize="18" Margin="40,0,0,0" >
+                <Run Text="Select an Existing Contestant "/> 
+                <LineBreak/>
+                <Run Text="      to add to the Event"/>
+                </TextBlock>
+                <Label x:Name ="lblerrorindicator1" Visibility="Hidden" Content="Contestant exists already " FontSize="19" HorizontalAlignment="Center" FontWeight="Bold" />
+     
+            <Button x:Name="btnaddexisting" Visibility="Visible"  Content="Add Contestant" FontSize="16" Margin="0,10,0,0" Click="btnaddexisting_Click"/>
+            </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Row="3" Grid.Column="3" Grid.RowSpan="7">
+            <Label Content="Modify Contestants for this Event"  FontSize="18"/>
+            <ComboBox x:Name="cmbjudgeoptions"  Height="30" FontSize="16" SelectionChanged="cmbcontestantoptions_SelectionChanged">
+                <ComboBoxItem>Edit</ComboBoxItem>
+                <ComboBoxItem>Add</ComboBoxItem>
+                <ComboBoxItem>Remove from Event</ComboBoxItem>
+                <ComboBoxItem>Delete from Database</ComboBoxItem>
+                <ComboBoxItem>Cancel</ComboBoxItem>
+
+            </ComboBox>
+            <StackPanel Orientation="Vertical" >
+                <Label x:Name="cnameavail" Content="" FontSize="13" FontStyle="Oblique"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Contestant First Name:" FontSize="16"/>
+                </StackPanel>
+                <TextBox x:Name="txbcfname" IsEnabled="False" Width="250" FontSize="14" VerticalAlignment="Top" Height="30" KeyUp="txbcfname_KeyDown"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" >
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Contestant Last Name:" FontSize="18"/>
+                </StackPanel>
+                <TextBox x:Name="txbclname" IsEnabled="False" Width="250" FontSize="16" VerticalAlignment="Top" Height="30" KeyUp="txbcfname_KeyDown"/>
+            </StackPanel>
+            <Image Source="/images/defaultpicmale.jpg"  Width="200" Height="200"/>
+            <Button x:Name="btneditpic" Visibility="Visible"  Content="Edit Picture" FontSize="16" Click="btneditpic_Click"/>
+            <Button x:Name="btnjudgeconfirm" Visibility="Hidden"  Content="" FontSize="16" Margin="0,20,0,0" Click="btncontestantconfirm_Click"/>
+
+
+        </StackPanel>
+
     </Grid>
 </UserControl>
