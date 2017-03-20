@@ -24,11 +24,15 @@ namespace UniversalVoting.JudgeTabs
     /// </summary>
     public partial class TabVoting : UserControl
     {
+        #region Attributes
+
         IDatabase _clsDb;
         int _eventjudgejID, _contestantID;
         ObservableCollection<Criteria> _criteria;
         DataTable _criteriaDT;
         DataTable _scoreDT;
+
+        #endregion
 
         public TabVoting()
         {
@@ -44,6 +48,55 @@ namespace UniversalVoting.JudgeTabs
             LoadContestant();
             LoadCriteria();
         }
+
+        private void dtgrdCriteria_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                object item = dtgrdCriteria.SelectedItem;
+                string name = (dtgrdCriteria.SelectedCells[0].Column.GetCellContent(item) as TextBlock).Text;
+
+                _clsDb.ExecuteStoredProc("[MCspGetEventCriteriaID]", "@Name", name, "@EventJudgeID", _eventjudgejID);
+                int EventCriteriaID = _clsDb.Data.Rows[0].Field<int>(0);
+                _clsDb = new Database();
+                _clsDb.ExecuteStoredProc("[MCspViewScore]", "@EventJudgeID", _eventjudgejID, "@ContestantID", _contestantID, "@EventCriteriaID", EventCriteriaID.ToString());
+                int _rate = Convert.ToInt32(_clsDb.Data.Rows[0].ItemArray.GetValue(0).ToString());
+                pnlRateHere.Children.Clear();
+                RatingStar rs = new RatingStar(_rate, false, _eventjudgejID, _contestantID, EventCriteriaID);
+                Label lblCriteria = new Label();
+                lblCriteria.VerticalAlignment = VerticalAlignment.Center;
+                lblCriteria.Margin = new Thickness(10);
+                lblCriteria.FontFamily = new FontFamily("../Fonts/Helvetica.otf#Helvetica");
+                lblCriteria.FontSize = 21;
+                lblCriteria.Content = name;
+                pnlRateHere.Children.Add(lblCriteria);
+                pnlRateHere.Children.Add(rs);
+            }
+            catch 
+            {
+            }
+
+        }
+
+        private void btnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            LoadCriteria();
+        }
+
+        private string ProfilePic(int personID)
+        {
+            string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+            string image = personID.ToString() + ".jpg";
+            string strDirectory = System.IO.Path.Combine(dir, "Images", image);
+            if (File.Exists(strDirectory))
+                return strDirectory;
+            else
+                return "../Images/iconAvatar.jpg";
+        }
+
+        public string ContestantImage { get; set; }
+
+        #region Load Items
 
         private void LoadContestant()
         {
@@ -62,36 +115,25 @@ namespace UniversalVoting.JudgeTabs
             _criteriaDT = new DataTable();
             _clsDb = new Database();
 
-            _clsDb.ExecuteStoredProc("[MCspViewCriteria]", "@EventJudgeID", _eventjudgejID);
+            _clsDb.ExecuteStoredProc("[MCspViewCriteria]", "@EventJudgeID", _eventjudgejID.ToString());
             if (_clsDb.Data.Rows.Count > 0)
                 _criteriaDT = _clsDb.Data;
 
             foreach (DataRow c in _criteriaDT.Rows)
             {
-                _clsDb.ExecuteStoredProc("[MCspViewScore]", "@EventJudgeID", _eventjudgejID, "@ContestantID", _contestantID, "@EventCriteriaID", c.Field<int>(2).ToString());
+                _clsDb.ExecuteStoredProc("[MCspViewScore]", "@EventJudgeID", _eventjudgejID.ToString(), "@ContestantID", _contestantID.ToString(), "@EventCriteriaID", c.Field<int>(2).ToString());
                 if (_clsDb.Data.Rows.Count > 0)
                     _criteria.Add(new Criteria() { Name = c.Field<string>(0), Score = Convert.ToInt32(_clsDb.Data.Rows[0].Field<double>(0)), Weight = c.Field<double>(1) });
                 else
                     _criteria.Add(new Criteria() { Name = c.Field<string>(0), Score = 0, Weight = c.Field<double>(1) });
             }
+
             dtgrdCriteria.ItemsSource = _criteria;
         }
 
-        private string ProfilePic(int personID)
-        {
-            string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-            string image = personID.ToString() + ".jpg";
-            string strDirectory = System.IO.Path.Combine(dir, "Images", image);
-            if (File.Exists(strDirectory))
-                return strDirectory;
-            else
-                return "../Images/iconAvatar.jpg";
-        }
-
-        public string ContestantImage { get; set; }
+        #endregion
     }
     
-
     #region Criteria Class
 
     public class Criteria : INotifyPropertyChanged
@@ -147,10 +189,11 @@ namespace UniversalVoting.JudgeTabs
         public Grid LoadRating()
         {
             Grid _grd = new Grid();
-            RatingStar rs = new RatingStar(score);
+            RatingStar rs = new RatingStar(score, true, 0, 0, 0);
             _grd.Children.Add(rs);   
             return _grd;
         }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

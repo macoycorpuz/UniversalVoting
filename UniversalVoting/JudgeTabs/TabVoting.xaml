@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UniversalVoting.JudgeTabs"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" >
     <Grid>
         <!--Fonts
         ../Fonts/HelveticaLTStd-Bold.otf#Helvetica LT Std Bold
@@ -14,7 +14,8 @@
         -->
         <Grid.RowDefinitions>
             <RowDefinition Height=".4*"/>
-            <RowDefinition Height=".6*"/>
+            <RowDefinition Height=".5*"/>
+            <RowDefinition Height=".1*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width=".6*"/>
@@ -41,7 +42,6 @@
                 <!--<ImageBrush ImageSource="../Images/iconAvatar.jpg" Stretch="UniformToFill"/>-->
             </Ellipse.Fill>
         </Ellipse>
-
         <DataGrid Name="dtgrdCriteria" 
                   Grid.Column="0" 
                   Grid.ColumnSpan="2" 
@@ -49,12 +49,12 @@
                   Margin="5,0,5,15" 
                   AutoGenerateColumns="False" 
                   IsReadOnly="True"
-                  ColumnWidth="*">
+                  ColumnWidth="*"
+                  SelectionChanged="dtgrdCriteria_SelectionChanged"
+                  ItemsSource="{Binding}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Criteria" 
                                     Binding="{Binding Name}"/>
-                <!--<DataGridTextColumn Header="Rating" 
-                                    Binding="{Binding Rating}"/>-->
                 <!--Not Sure here -->
                 <DataGridTemplateColumn Header="Rating">
                     <DataGridTemplateColumn.CellTemplate>
@@ -67,7 +67,6 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <!--Not Sure here -->
-
                 <DataGridTextColumn Header="Weight" 
                                     Binding="{Binding Weight}"
                                     Width="100"/>
@@ -83,6 +82,17 @@
                 </Style>
             </DataGrid.Resources>
         </DataGrid>
+        <StackPanel Name="pnlRateHere"
+                    Grid.Row="2"
+                    Orientation="Horizontal"/>
+        <Button Name="btnRefresh"
+                Width="150"
+                Height="50"
+                Content="Refresh"
+                FontSize="20"
+                Grid.Row="2"
+                Grid.Column="1"
+                Click="btnRefresh_Click"/>
 
     </Grid>
 </UserControl>

@@ -28,8 +28,7 @@ namespace UniversalVoting
         #region Attributes
 
         IDatabase _clsDb;
-        int _judgeid = 1;
-        //ObservableCollection<Contestant> _contestants;
+        int _judgeid;
         DataRowView _selectedContestant = null;
         DataTable _contestants;
         DataTable c;
@@ -51,6 +50,10 @@ namespace UniversalVoting
         {
             InitializeComponent();
             _judgeid = JID;
+
+            _clsDb = new Database();
+            _clsDb.ExecuteStoredProc("MCspViewJudges", "@JudgeID", _judgeid.ToString());
+            txtJudge.Text = "Hello " + _clsDb.Data.Rows[0].Field<string>(0) + " " + _clsDb.Data.Rows[0].Field<string>(1) + "!!";
             LoadEvents();
         }
 
@@ -109,7 +112,7 @@ namespace UniversalVoting
 
         private void lstContestants_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
-
+            LoadResultTab();
         }
 
         #endregion
@@ -120,14 +123,16 @@ namespace UniversalVoting
         {
             _clsDb = new Database();
             cbxEvent.Items.Clear();
-            _clsDb.ExecuteCommand("SELECT * FROM EVENT");
+            _clsDb.ExecuteCommand("SELECT * FROM EVENT AS E INNER JOIN EventJudges AS EJ ON EJ.EventID = E.EventID WHERE EJ.JudgeID = " + _judgeid.ToString());
+            
             foreach (DataRow events in _clsDb.Data.Rows)
             {
-                cbxEvent.Items.Add(events.Field<string>(0));
+                if (events.Field<bool>(2))
+                    cbxEvent.Items.Add(events.Field<string>(0));
             }
         }
 
-        private void LoadContestants()
+        public void LoadContestants()
         {
             _clsDb = new Database();
             _contestants = new DataTable();
@@ -154,17 +159,17 @@ namespace UniversalVoting
 
         private void LoadResultTab()
         {
-            //UserVotingTab.Children.Clear();
-            //UserResultsTab.Children.Clear();
-            //_clsDb = new Database();
-            //_clsDb.ExecuteStoredProc("MCspViewJudgeEvent", "@EventName", cbxEvent.SelectedValue.ToString(), "@JID", _judgeid.ToString());
-            //if (_clsDb.Data.Rows.Count > 0)
-            //{
-            //    TabVoting votingtab = new TabVoting(_clsDb.Data.Rows[0].Field<int>(0));
-            //    UserVotingTab.Children.Add(votingtab);
-            //    TabResults resultstab = new TabResults();
-            //    UserResultsTab.Children.Add(resultstab);
-            //}
+            UserResultsTab.Children.Clear();
+            _clsDb = new Database();
+            _clsDb.ExecuteCommand("SELECT * FROM EVENT WHERE EventName = N'" + cbxEvent.SelectedValue.ToString() + "'");
+            if (_clsDb.Data.Rows.Count > 0)
+            {
+                if (cbxEvent.SelectedIndex != -1)
+                {
+                    TabResults resultstab = new TabResults(_clsDb.Data.Rows[0].Field<int>(1));
+                    UserResultsTab.Children.Add(resultstab);
+                }
+            }
         }
 
         private void LoadVotingTab(int contestantID)
