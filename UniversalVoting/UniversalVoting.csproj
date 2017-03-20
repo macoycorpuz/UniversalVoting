@@ -62,6 +62,9 @@
     <Compile Include="EventOrganizerTabs\TabCriteria.xaml.cs">
       <DependentUpon>TabCriteria.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EventOrganizerTabs\Tabfinalize.xaml.cs">
+      <DependentUpon>Tabfinalize.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EventOrganizerTabs\TabJudges.xaml.cs">
       <DependentUpon>TabJudges.xaml</DependentUpon>
     </Compile>
@@ -77,6 +80,10 @@
     <Page Include="EventOrganizerTabs\TabCriteria.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EventOrganizerTabs\Tabfinalize.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="EventOrganizerTabs\TabJudges.xaml">
       <Generator>MSBuild:Compile</Generator>

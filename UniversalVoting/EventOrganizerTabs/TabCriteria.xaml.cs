@@ -104,21 +104,27 @@ namespace UniversalVoting.EventOrganizerTabs
         private void btncriteriaconfirm_Click(object sender, RoutedEventArgs e)
         {
             DataRowView dataRow;
-         
+            int temp;
             if (cmbjudgeoptions.SelectedIndex == 0)
             {
-                #region edit           
+                #region edit 
+                if (dgEventCriteria.SelectedIndex == -1)
+                    return;
                 if (cnameavail.Content.ToString() == "Criteria Taken already")
                 {
                     System.Windows.MessageBox.Show("Criteria already taken..");
                     return;
                 }
 
-                if (dgEventCriteria.SelectedIndex == -1)
+                
+                if(!int.TryParse(txbcweight.Text, out temp))
+                {
+                    System.Windows.MessageBox.Show("Weight cannot be understood..");
                     return;
+                }
 
-                if (int.Parse(txbcweight.Text.ToString()) + weightsum -
-            int.Parse(clsDatabase.Data.Rows[dgEventCriteria.SelectedIndex].ItemArray[1].ToString()) > 100)
+                if ((int.Parse(txbcweight.Text.ToString()) + weightsum -
+            int.Parse(clsDatabase.Data.Rows[dgEventCriteria.SelectedIndex].ItemArray[1].ToString()) > 100) || (int.Parse(txbcweight.Text) < 1))
                 {
                     System.Windows.MessageBox.Show("Weight cannot be Added");
                     return;
@@ -156,7 +162,14 @@ namespace UniversalVoting.EventOrganizerTabs
                     return;
                 }
 
-                if ((int.Parse(txbcweight.Text.ToString()) + weightsum > 100) || (weightsum == 100))
+
+                if (!int.TryParse(txbcweight.Text, out temp))
+                {
+                    System.Windows.MessageBox.Show("Weight cannot be understood..");
+                    return;
+                }
+
+                if ((int.Parse(txbcweight.Text.ToString()) + weightsum > 100) || (weightsum == 100) || (int.Parse(txbcweight.Text) < 1))
                 {
                     System.Windows.MessageBox.Show("Weight cannot be Added");
                     return;
@@ -184,9 +197,9 @@ namespace UniversalVoting.EventOrganizerTabs
             else if (cmbjudgeoptions.SelectedIndex == 2)
             {  
                 #region delete from event
-
                 if (dgEventCriteria.SelectedIndex == -1)
                     return;
+
                 dataRow = (DataRowView)dgEventCriteria.SelectedItem;
 
                 String s = "Confirm Removing Criteria from Event \n\nCriteria: \t" + dataRow[0].ToString() + "\nWeight: \t" + dataRow[1].ToString();
@@ -205,46 +218,28 @@ namespace UniversalVoting.EventOrganizerTabs
                 }
                 #endregion
             }
-            else if (cmbjudgeoptions.SelectedIndex == 3)
-            {
-                #region delete from database
-
-                if (dgEventCriteria.SelectedIndex == -1)
-                    return;
-                dataRow = (DataRowView)dgEventCriteria.SelectedItem;
-
-                String s = "Confirm Removing Criteria from Database?? \n\nCriteria: \t" + dataRow[0].ToString() +"\nWeight: \t" + dataRow[1].ToString();
-
-                DialogResult dialogResult = System.Windows.Forms.MessageBox.Show(s, "Warning", MessageBoxButtons.YesNo);
-
-                if (dialogResult == DialogResult.Yes)
-                {
-                    clsDatabase = new Database();
-                    clsDatabase.ExecuteStoredProc("spRemoveCriteriaFromDatabase",
-                    "@cname", dataRow[0].ToString(),
-                    "@_eventid", _tabeventid);
-
-                    if (!(clsDatabase.HasError))
-                    {
-                        System.Windows.MessageBox.Show("Deletion Successful");
-                        cmbjudgeoptions.SelectedIndex = -1;
-                        dgEventCriteria.IsEnabled = true;
-                        RefreshDataGrids();
-                        dgEventCriteria.IsEnabled = false;
-                    }
-                }
-                #endregion
-            }
+            else
             cmbcriteriaoptions_SelectionChanged();
-
+            disableall();
         }
         
         private void btnaddexisting_Click(object sender, RoutedEventArgs e)
         {
+            int temp;
             if ((dgAllCriteria.SelectedIndex == -1) || (dgAllCriteria.SelectedItem == null))
                 return;
 
-            if((int.Parse(txbcweightadd.Text.ToString())+ weightsum>100)||(weightsum==100))
+            if (txbcweightadd.Text == "")
+                return;
+
+
+            if (!int.TryParse(txbcweightadd.Text, out temp))
+            {
+                System.Windows.MessageBox.Show("Weight cannot be understood..");
+                return;
+            }
+
+            if ((int.Parse(txbcweightadd.Text.ToString())+ weightsum>100)||(weightsum==100)||(int.Parse(txbcweightadd.Text)<1))
             {
                 System.Windows.MessageBox.Show("Weight cannot be Added");
                 return;
@@ -298,6 +293,29 @@ namespace UniversalVoting.EventOrganizerTabs
                 txbcweightadd.IsEnabled = true;
             else
                 txbcweightadd.IsEnabled = false;
+        }
+
+        private bool checkfields()
+        {
+            if (txbcname.Text == "")
+                return false;
+            if (txbcweight.Text == "")
+                return false;
+            return true;
+        }
+
+        private void disableall()
+        {
+            dgEventCriteria.SelectedIndex = -1;
+            dgEventCriteria.IsEnabled = false;
+            txbcname.IsEnabled = false;
+            txbcweight.IsEnabled = false;
+            btnjudgeconfirm.Visibility = Visibility.Hidden;
+            cnameavail.Content = "";
+            cweightavail.Content = "";
+            cmbjudgeoptions.SelectedIndex = -1;
+
+
         }
     }
 }
