@@ -24,10 +24,12 @@ namespace UniversalVoting.JudgeTabs
         int intCount = 1;
         int Rate = 0;
 
-        public RatingStar()
+        public RatingStar(int r)
         {
             InitializeComponent();
             LoadImages();
+            SetImage(r, Visibility.Visible, Visibility.Hidden);
+            Rate = r;
         }
 
         public void SetRating(int r)

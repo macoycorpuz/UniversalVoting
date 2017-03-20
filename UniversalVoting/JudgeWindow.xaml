@@ -192,7 +192,7 @@
                 <ListView Name="lstContestants"
                           Margin="5"
                           Background="#d6e5ff"
-                          SelectionChanged="lstContestants_SelectionChanged">
+                          SelectionChanged="lstContestants_SelectionChanged_1">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -213,6 +213,11 @@
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListViewItem_OnConversationClick" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
                 </ListView>
             </GroupBox>
         </Grid>

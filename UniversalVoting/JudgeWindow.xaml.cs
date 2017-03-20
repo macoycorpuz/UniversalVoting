@@ -29,7 +29,10 @@ namespace UniversalVoting
 
         IDatabase _clsDb;
         int _judgeid = 1;
-        ObservableCollection<Contestant> _contestants;
+        //ObservableCollection<Contestant> _contestants;
+        DataRowView _selectedContestant = null;
+        DataTable _contestants;
+        DataTable c;
 
         #endregion
 
@@ -51,16 +54,65 @@ namespace UniversalVoting
             LoadEvents();
         }
 
+        private string ProfilePic(int personID)
+        {
+            string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+            string image = personID.ToString() + ".jpg";
+            string strDirectory = System.IO.Path.Combine(dir, "Images", image);
+            if (File.Exists(strDirectory))
+                return strDirectory;
+            else
+                return "../Images/iconAvatar.jpg";
+        }
+
+        private string IsVoteOk(int CID)
+        {
+            bool status = true;
+            _clsDb = new Database();
+            _clsDb.ExecuteStoredProc("MCspViewStatus", "@EventName", cbxEvent.SelectedValue.ToString(), "@JudgeID", _judgeid.ToString(), "@ContestantID", CID.ToString());
+            foreach(DataRow Score in _clsDb.Data.Rows)
+            {
+                if (Score.Field<double>(0) == 0)
+                    status = false;
+            }
+
+            if (status)
+                return "../Images/iconCheck.png";
+            else
+                return "../Images/iconCircle.png";
+        }
+
+        #region Selection
+
         private void cbxEvent_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            UserVotingTab.Children.Clear();
             LoadResultTab();
             LoadContestants();
         }
 
         private void lstContestants_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            LoadVotingTab();
+            //LoadVotingTab();
         }
+
+        private void ListViewItem_OnConversationClick(object sender, MouseButtonEventArgs e)
+        {
+            ListViewItem item = sender as ListViewItem;
+            if (item != null)
+            {
+                _selectedContestant = null;
+                _selectedContestant = item.DataContext as DataRowView;
+                LoadVotingTab(Convert.ToInt32(_selectedContestant.Row["ID"].ToString()));
+            }
+        }
+
+        private void lstContestants_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        #endregion
 
         #region Load Items
 
@@ -78,22 +130,28 @@ namespace UniversalVoting
         private void LoadContestants()
         {
             _clsDb = new Database();
-            _contestants = new ObservableCollection<Contestant>();
+            _contestants = new DataTable();
+            c = new DataTable();
             if (cbxEvent.SelectedIndex != -1)
             {
+                c.Columns.Add("ID");
+                c.Columns.Add("Name");
+                c.Columns.Add("Status");
+                c.Columns.Add("Avatar");
                 _clsDb.ExecuteStoredProc("MCspViewContestants", "@EventName", cbxEvent.SelectedValue.ToString());
+                if (_clsDb.Data.Rows.Count > 0)
+                    _contestants = _clsDb.Data;
+
                 string name = "";
-                bool status = false;
-                foreach (DataRow contestants in _clsDb.Data.Rows)
+                foreach (DataRow contestants in _contestants.Rows)
                 {
                     name = contestants.Field<int>(0).ToString() + ". " + contestants.Field<string>(1) + " " + contestants.Field<string>(2);
-                    //Insert status of rating process
-                    _contestants.Add(new Contestant() { Name = name, IsChecked = status, Avatar = ProfilePic(contestants.Field<int>(3)) });
+                    c.Rows.Add(contestants.Field<int>(4), name, IsVoteOk(contestants.Field<int>(4)), ProfilePic(contestants.Field<int>(3)));
                 }
-                lstContestants.ItemsSource = _contestants;
+                lstContestants.ItemsSource = c.DefaultView;
             }
         }
-    
+
         private void LoadResultTab()
         {
             //UserVotingTab.Children.Clear();
@@ -109,7 +167,7 @@ namespace UniversalVoting
             //}
         }
 
-        private void LoadVotingTab()
+        private void LoadVotingTab(int contestantID)
         {
             UserVotingTab.Children.Clear();
             _clsDb = new Database();
@@ -118,7 +176,7 @@ namespace UniversalVoting
             {
                 if (lstContestants.SelectedIndex != -1)
                 {
-                    TabVoting votingtab = new TabVoting(_clsDb.Data.Rows[0].Field<int>(0), 2);
+                    TabVoting votingtab = new TabVoting(_clsDb.Data.Rows[0].Field<int>(0), contestantID);
                     UserVotingTab.Children.Add(votingtab);
                 }
             }
@@ -126,84 +184,5 @@ namespace UniversalVoting
 
         #endregion
 
-        private string ProfilePic(int personID)
-        {
-            string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-            string image = personID.ToString() + ".jpg";
-            string strDirectory = System.IO.Path.Combine(dir, "Images", image);
-            if (File.Exists(strDirectory))
-                return strDirectory;
-            else
-                return "../Images/iconAvatar.jpg";
-        }
     }
-
-    #region Contestant Class
-
-    public class Contestant : INotifyPropertyChanged
-    {
-        private string name;
-        private bool status;
-        private string avatar;
-
-        public string Name
-        {
-            get { return this.name; }
-            set
-            {
-                if (this.name != value)
-                {
-                    this.name = value;
-                    this.NotifyPropertyChanged("Name");
-                }
-            }
-        }
-
-        public bool IsChecked
-        {
-            set
-            {
-                if (this.status != value)
-                {
-                    this.status = value;
-                    this.NotifyPropertyChanged("Name");
-                }
-            }
-        }
-
-        public string Status
-        {
-            get
-            {
-                if (status)
-                    return "../Images/iconCheck.png";
-                else
-                    return "../Images/iconCircle.png";
-            }
-        }
-
-        public string Avatar
-        {
-            get { return this.avatar; }
-            set
-            {
-                if (this.avatar != value)
-                {
-                    this.avatar = value;
-                    this.NotifyPropertyChanged("Avatar");
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void NotifyPropertyChanged(string propName)
-        {
-            if (this.PropertyChanged != null)
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propName));
-        }
-    }
-
-    #endregion
-
 }

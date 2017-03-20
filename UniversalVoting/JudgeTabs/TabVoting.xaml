@@ -21,7 +21,6 @@
             <ColumnDefinition Width=".4*"/>
         </Grid.ColumnDefinitions>
 
-        <local:RatingStar x:Name="star"/>
         <Border BorderBrush="Black" BorderThickness="5" Height="150"  Grid.Column="0" Grid.ColumnSpan="2">
             <Rectangle Fill="Snow" Height="150" HorizontalAlignment="Stretch" Margin="5"/>
         </Border>
@@ -54,12 +53,16 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Criteria" 
                                     Binding="{Binding Name}"/>
-
+                <!--<DataGridTextColumn Header="Rating" 
+                                    Binding="{Binding Rating}"/>-->
                 <!--Not Sure here -->
                 <DataGridTemplateColumn Header="Rating">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Grid Name="grdRating"/>
+                            <Grid Name="grdRating">
+                                <ContentPresenter Name="AccountGrid"  Content="{Binding Rating}">
+                                </ContentPresenter>
+                            </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
