@@ -59,6 +59,18 @@ namespace UniversalVoting.JudgeTabs
         private void LoadCriteria()
         {
 
+            //UserVotingTab.Children.Clear();
+            //_clsDb = new Database();
+            //_clsDb.ExecuteStoredProc("MCspViewJudgeEvent", "@EventName", cbxEvent.SelectedValue.ToString(), "@JID", _judgeid.ToString());
+            //if (_clsDb.Data.Rows.Count > 0)
+            //{
+            //    if (lstContestants.SelectedIndex != -1)
+            //    {
+            //        TabVoting votingtab = new TabVoting(_clsDb.Data.Rows[0].Field<int>(0), 2);
+            //        UserVotingTab.Children.Add(votingtab);
+            //    }
+            //}
+
             criteria.Add(new Criteria() { Name = "Questions and Answer" });
             criteria.Add(new Criteria() { Name = "Bikini" });
             criteria.Add(new Criteria() { Name = "Formal" });

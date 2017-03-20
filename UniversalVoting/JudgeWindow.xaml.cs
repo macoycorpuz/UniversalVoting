@@ -39,6 +39,8 @@ namespace UniversalVoting
             LoadEvents();
             _clsDb = new Database();
             _clsDb.ExecuteStoredProc("MCspViewJudges", "@JudgeID", _judgeid.ToString());
+            //try catch
+
             txtJudge.Text = "Hello " + _clsDb.Data.Rows[0].Field<string>(0) + " " +_clsDb.Data.Rows[0].Field<string>(1) + "!!";
         }
 
