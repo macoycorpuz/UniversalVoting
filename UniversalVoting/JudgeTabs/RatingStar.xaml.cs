@@ -51,7 +51,7 @@ namespace UniversalVoting.JudgeTabs
 
         private void LoadImages()
         {
-            for (int i = 1; i <= 9; i++)
+            for (int i = 1; i <= 10; i++)
             {
                 Image img = new Image();
                 img.Name = "imgRate" + i;
@@ -64,7 +64,7 @@ namespace UniversalVoting.JudgeTabs
 
 
                 Image img1 = new Image();
-                img1.Name = "imgRate" + i + i;
+                img1.Name = "imgRate1" + i;
                 img1.Stretch = Stretch.UniformToFill;
                 img1.Height = 25;
                 img1.Width = 25;
@@ -136,9 +136,10 @@ namespace UniversalVoting.JudgeTabs
         private void GetRating(Image Img)
         {
             string strImgName = Img.Name;
-            intRate = Convert.ToInt32(strImgName.Substring(strImgName.Length - 1, 1));
-            //string[] words = strImgName.Split('e');
-            //intRate = Convert.ToInt32(words[1]);
+            if (strImgName.Length < 9)
+                intRate = Convert.ToInt32(strImgName.Substring(strImgName.Length - 1, 1));
+            else if (strImgName.Length == 9)
+                intRate = Convert.ToInt32(strImgName.Substring(strImgName.Length - 2, 2));
         }
         
     }
