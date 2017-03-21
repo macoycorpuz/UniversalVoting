@@ -356,7 +356,11 @@
     <Resource Include="Images\PlusRate.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\defaultpicmale.jpg" />
+    <Resource Include="Images\personpic2.jpg" />
+    <Resource Include="Images\personpic6.jpg" />
+    <Resource Include="Images\personpic7.jpg" />
+    <Resource Include="Images\personpic8.jpg" />
+    <Resource Include="Images\personpic9.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

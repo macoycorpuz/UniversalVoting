@@ -14,7 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
-
+using System.Data;
+using System.IO;
 
 namespace UniversalVoting.JudgeTabs
 {
@@ -23,111 +24,123 @@ namespace UniversalVoting.JudgeTabs
     /// </summary>
     public partial class TabVoting : UserControl
     {
+        #region Attributes
+
         IDatabase _clsDb;
-        ObservableCollection<Contestant> contestants = new ObservableCollection<Contestant>();
-        ObservableCollection<Contestant> contestantInfo = new ObservableCollection<Contestant>();
-        ObservableCollection<Criteria> criteria = new ObservableCollection<Criteria>();
+        int _eventjudgejID, _contestantID;
+        ObservableCollection<Criteria> _criteria;
+        DataTable _criteriaDT;
+        DataTable _scoreDT;
+
+        #endregion
 
         public TabVoting()
         {
             InitializeComponent();
         }
 
-        public TabVoting(int ID)
+        public TabVoting(int eventjudgeID, int contestantID)
         {
             InitializeComponent();
-            LoadContestants();
+            imgHere.DataContext = this;
+            _eventjudgejID = eventjudgeID;
+            _contestantID = contestantID;
+            LoadContestant();
             LoadCriteria();
         }
 
-        private void LoadContestants()
+        private void dtgrdCriteria_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                object item = dtgrdCriteria.SelectedItem;
+                string name = (dtgrdCriteria.SelectedCells[0].Column.GetCellContent(item) as TextBlock).Text;
+
+                _clsDb.ExecuteStoredProc("[MCspGetEventCriteriaID]", "@Name", name, "@EventJudgeID", _eventjudgejID);
+                int EventCriteriaID = _clsDb.Data.Rows[0].Field<int>(0);
+                _clsDb = new Database();
+                _clsDb.ExecuteStoredProc("[MCspViewScore]", "@EventJudgeID", _eventjudgejID, "@ContestantID", _contestantID, "@EventCriteriaID", EventCriteriaID.ToString());
+                int _rate = Convert.ToInt32(_clsDb.Data.Rows[0].ItemArray.GetValue(0).ToString());
+                pnlRateHere.Children.Clear();
+                RatingStar rs = new RatingStar(_rate, false, _eventjudgejID, _contestantID, EventCriteriaID);
+                Label lblCriteria = new Label();
+                lblCriteria.VerticalAlignment = VerticalAlignment.Center;
+                lblCriteria.Margin = new Thickness(10);
+                lblCriteria.FontFamily = new FontFamily("../Fonts/Helvetica.otf#Helvetica");
+                lblCriteria.FontSize = 21;
+                lblCriteria.Content = name;
+                pnlRateHere.Children.Add(lblCriteria);
+                pnlRateHere.Children.Add(rs);
+            }
+            catch 
+            {
+            }
+
+        }
+
+        private void btnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            LoadCriteria();
+        }
+
+        private string ProfilePic(int personID)
+        {
+            string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+            string image = "personpic" + personID.ToString() + ".jpg";
+            string strDirectory = System.IO.Path.Combine(dir, "Images", image);
+            if (File.Exists(strDirectory))
+                return strDirectory;
+            else
+                return "../Images/iconAvatar.jpg";
+        }
+
+        public string ContestantImage { get; set; }
+
+        #region Load Items
+
+        private void LoadContestant()
         {
             _clsDb = new Database();
-            contestants.Add(new Contestant() { Name = "Kyle Floresta", Status = "1", Avatar = "../Images/iconAvatar.jpg" });
-            contestants.Add(new Contestant() { Name = "Marcuz Corpuz", Status = "", Avatar = "../Images/iconAvatar.jpg" });
-            contestants.Add(new Contestant() { Name = "Lols", Status = "1", Avatar = "../Images/iconAvatar.jpg" });
-            lstContestants.ItemsSource = contestants;
+            _clsDb.ExecuteStoredProc("MCspViewContestant", "@ContestantID", _contestantID);
+            if (_clsDb.Data.Rows.Count > 0)
+            {
+                lblContestantName.Content = _clsDb.Data.Rows[0].Field<int>(0).ToString() + ". " + _clsDb.Data.Rows[0].Field<string>(1) + " " +_clsDb.Data.Rows[0].Field<string>(2);
+                ContestantImage = ProfilePic(_clsDb.Data.Rows[0].Field<int>(3));
+            }
         }
 
         private void LoadCriteria()
         {
-            criteria.Add(new Criteria() { Name = "Questions and Answer" });
-            criteria.Add(new Criteria() { Name = "Bikini" });
-            criteria.Add(new Criteria() { Name = "Formal" });
-            dtgrdCriteria.ItemsSource = criteria;
-        }
-    }
+            _criteria = new ObservableCollection<Criteria>();
+            _criteriaDT = new DataTable();
+            _clsDb = new Database();
 
+            _clsDb.ExecuteStoredProc("[MCspViewCriteria]", "@EventJudgeID", _eventjudgejID.ToString());
+            if (_clsDb.Data.Rows.Count > 0)
+                _criteriaDT = _clsDb.Data;
 
-    #region Contestant Class
-
-    public class Contestant : INotifyPropertyChanged
-    {
-        private string name;
-        private string status;
-        private string avatar;
-
-        public string Name
-        {
-            get { return this.name; }
-            set
+            foreach (DataRow c in _criteriaDT.Rows)
             {
-                if (this.name != value)
-                {
-                    this.name = value;
-                    this.NotifyPropertyChanged("Name");
-                }
-            }
-        }
-
-        public string Status
-        {
-            get
-            {
-                if (this.status == "1")
-                    return "../Images/iconCheck.png";
+                _clsDb.ExecuteStoredProc("[MCspViewScore]", "@EventJudgeID", _eventjudgejID.ToString(), "@ContestantID", _contestantID.ToString(), "@EventCriteriaID", c.Field<int>(2).ToString());
+                if (_clsDb.Data.Rows.Count > 0)
+                    _criteria.Add(new Criteria() { Name = c.Field<string>(0), Score = Convert.ToInt32(_clsDb.Data.Rows[0].Field<double>(0)), Weight = c.Field<double>(1) });
                 else
-                    return "../Images/iconCircle.png";
+                    _criteria.Add(new Criteria() { Name = c.Field<string>(0), Score = 0, Weight = c.Field<double>(1) });
             }
-            set
-            {
-                if (this.status != value)
-                {
-                    this.status = value;
-                    this.NotifyPropertyChanged("Status");
-                }
-            }
+
+            dtgrdCriteria.ItemsSource = _criteria;
         }
 
-        public string Avatar
-        {
-            get { return this.avatar; }
-            set
-            {
-                if (this.avatar != value)
-                {
-                    this.avatar = value;
-                    this.NotifyPropertyChanged("Avatar");
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void NotifyPropertyChanged(string propName)
-        {
-            if (this.PropertyChanged != null)
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propName));
-        }
+        #endregion
     }
-
-    #endregion
-
+    
     #region Criteria Class
 
     public class Criteria : INotifyPropertyChanged
     {
         private string name;
+        private double weight;
+        private int score;
 
         public string Name
         {
@@ -141,7 +154,47 @@ namespace UniversalVoting.JudgeTabs
                 }
             }
         }
-        
+
+        public Grid Rating
+        {
+            get { return LoadRating(); }
+        }
+
+        public double Weight
+        {
+            get { return this.weight; }
+            set
+            {
+                if (this.weight != value)
+                {
+                    this.weight = value;
+                    this.NotifyPropertyChanged("Weight");
+                }
+            }
+        }
+
+        public int Score
+        {
+            get { return this.score; }
+            set
+            {
+                if (this.score != value)
+                {
+                    this.score = value;
+                    this.NotifyPropertyChanged("Score");
+                }
+            }
+        }
+
+        public Grid LoadRating()
+        {
+            Grid _grd = new Grid();
+            RatingStar rs = new RatingStar(score, true, 0, 0, 0);
+            _grd.Children.Add(rs);   
+            return _grd;
+        }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void NotifyPropertyChanged(string propName)

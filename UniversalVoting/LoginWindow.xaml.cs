@@ -21,6 +21,9 @@ namespace UniversalVoting
     public partial class LoginWindow : Window
     {
         IDatabase _clsDb;
+        DataTable _eventorganizers;
+        DataTable _events;
+        DataTable _judges;
 
         public LoginWindow()
         {
@@ -30,9 +33,16 @@ namespace UniversalVoting
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             bool IsCorrect = false;
+            bool IsFinalize = false;
             _clsDb = new Database();
+            _eventorganizers = new DataTable();
+            _events = new DataTable();
+            _judges = new DataTable();
+
             _clsDb.ExecuteCommand("SELECT * FROM Judge");
-            foreach (DataRow j in _clsDb.Data.Rows)
+            if (_clsDb.Data.Rows.Count > 0)
+                _judges = _clsDb.Data;
+            foreach (DataRow j in _judges.Rows)
             {
                 if (txtUsername.Text == j.Field<string>(2).ToString() && txtPassword.Password.ToString() == j.Field<string>(3).ToString())
                 {
@@ -49,16 +59,24 @@ namespace UniversalVoting
             }
 
             _clsDb.ExecuteCommand("SELECT * FROM EventOrganizer");
-            foreach (DataRow o in _clsDb.Data.Rows)
+            if (_clsDb.Data.Rows.Count > 0)
+                _eventorganizers = _clsDb.Data;
+            foreach (DataRow o in _eventorganizers.Rows)
             {
                 if (txtUsername.Text == o.Field<string>(1).ToString() && txtPassword.Password.ToString() == o.Field<string>(2).ToString())
                 {
                     IsCorrect = true;
-                    this.Hide();
-                    EventOrganizerWindow organizer = new EventOrganizerWindow(o.Field<int>(3));
-                    organizer.ShowDialog();
-                    organizer = null;
-                    this.Show();
+                    _clsDb.ExecuteCommand("SELECT E.IsFinalize FROM EVENT AS E INNER JOIN EVENTORGANIZER AS EO ON EO.EventID = E.EventID WHERE EO.adminUname = N'" + o.Field<string>(1).ToString() + "'");
+                    if (!_clsDb.Data.Rows[0].Field<bool>(0))
+                    {
+                        this.Hide();
+                        EventOrganizerWindow organizer = new EventOrganizerWindow(o.Field<int>(3));
+                        organizer.ShowDialog();
+                        organizer = null;
+                        this.Show();
+                    }
+                    else
+                        MessageBox.Show("The event has been finalized!");
                     txtUsername.Clear();
                     txtPassword.Clear();
                     lblError.Content = null;

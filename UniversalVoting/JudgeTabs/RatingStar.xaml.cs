@@ -20,29 +20,48 @@ namespace UniversalVoting.JudgeTabs
     /// </summary>
     public partial class RatingStar : UserControl
     {
+        #region Attributes
+
         int intRate = 0;
         int intCount = 1;
         int Rate = 0;
+        bool IsDisplay = true;
+        int _eventjudgejID, _contestantID, _eventcriteriaID;
+        IDatabase _clsDb;
 
-        public RatingStar()
+        #endregion
+
+        public RatingStar(int r, bool disp, int eventjudgejID, int contestantID, int eventcriteriaID)
         {
             InitializeComponent();
             LoadImages();
-            //lblRating.Text = intRate.ToString();
+            SetImage(r, Visibility.Visible, Visibility.Hidden);
+            Rate = r;
+            IsDisplay = disp;
+            _eventjudgejID = eventjudgejID;
+            _contestantID = contestantID;
+            _eventcriteriaID = eventcriteriaID;
+        }
+
+        public void SetRating(int r)
+        {
+            SetImage(r, Visibility.Visible, Visibility.Hidden);
+            Rate = r;
         }
 
         private void LoadImages()
         {
-            for (int i = 1; i <= 10; i++)
+            for (int i = 1; i <= 9; i++)
             {
                 Image img = new Image();
                 img.Name = "imgRate" + i;
                 img.Stretch = Stretch.UniformToFill;
                 img.Height = 25;
                 img.Width = 25;
-                img.Source = new BitmapImage(new Uri(@"\Images\MinusRate.png", UriKind.Relative));
+                img.Source = new BitmapImage(new Uri(@"\Images\MinusRate.png", UriKind.Relative));               
                 img.MouseEnter += imgRateMinus_MouseEnter;
                 pnlMinus.Children.Add(img);
+
 
                 Image img1 = new Image();
                 img1.Name = "imgRate" + i + i;
@@ -56,26 +75,31 @@ namespace UniversalVoting.JudgeTabs
                 img1.MouseLeftButtonUp += imgRatePlus_MouseLeftButtonUp;
                 pnlPlus.Children.Add(img1);
             }
+
         }
 
         private void imgRateMinus_MouseEnter(object sender, MouseEventArgs e)
         {
-            GetData(sender, Visibility.Visible, Visibility.Hidden);
+            if (!IsDisplay)
+                GetData(sender, Visibility.Visible, Visibility.Hidden);
         }
 
         private void imgRatePlus_MouseEnter(object sender, MouseEventArgs e)
         {
-            GetData(sender, Visibility.Visible, Visibility.Hidden);
+            if (!IsDisplay)
+                GetData(sender, Visibility.Visible, Visibility.Hidden);
         }
 
         private void imgRatePlus_MouseLeave(object sender, MouseEventArgs e)
         {
-            GetData(sender, Visibility.Hidden, Visibility.Visible);
+            if (!IsDisplay)
+                GetData(sender, Visibility.Hidden, Visibility.Visible);
         }
 
         private void gdRating_MouseLeave(object sender, MouseEventArgs e)
         {
-            SetImage(Rate, Visibility.Visible, Visibility.Hidden);
+            if (!IsDisplay)
+                SetImage(Rate, Visibility.Visible, Visibility.Hidden);
         }
 
         private void GetData(object sender, Visibility imgYellowVisibility, Visibility imgGrayVisibility)
@@ -99,8 +123,13 @@ namespace UniversalVoting.JudgeTabs
 
         private void imgRatePlus_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            GetRating(sender as Image);
-            Rate = intRate;
+            if (!IsDisplay)
+            {
+                GetRating(sender as Image);
+                Rate = intRate;
+                _clsDb = new Database();
+                _clsDb.ExecuteStoredProc("[MCspUpdateScore]", "@EventJudgeID", _eventjudgejID.ToString(), "@ContestantID", _contestantID.ToString(), "@EventCriteriaID", _eventcriteriaID.ToString(), "@Score", Rate.ToString());
+            }
             //lblRating.Text = intRate.ToString();
         }
 
@@ -108,8 +137,9 @@ namespace UniversalVoting.JudgeTabs
         {
             string strImgName = Img.Name;
             intRate = Convert.ToInt32(strImgName.Substring(strImgName.Length - 1, 1));
+            //string[] words = strImgName.Split('e');
+            //intRate = Convert.ToInt32(words[1]);
         }
         
-
     }
 }
