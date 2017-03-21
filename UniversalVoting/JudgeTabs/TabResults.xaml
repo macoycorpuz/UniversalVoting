@@ -11,12 +11,21 @@
             <ItemsControl Name="myic">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal" >
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width=".3*"/>
+                                <ColumnDefinition Width=".7*"/>
+                            </Grid.ColumnDefinitions>
                             <Image Name="imgsrc" 
                                    Source="{Binding Path=gender }" 
                                    Width="150" 
                                    Height="150"/>
-                            <StackPanel>
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height=".4*"/>
+                                    <RowDefinition Height=".4*"/>
+                                    <RowDefinition Height=".2*"/>
+                                </Grid.RowDefinitions>
                                 <StackPanel Orientation="Horizontal">
                                     <Label  Content="Contestant Name: " 
                                             FontFamily="Verdana" 
@@ -25,10 +34,12 @@
                                            Content="{Binding Path=name}" 
                                            FontFamily="Verdana" FontSize="20"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal"
+                                            Grid.Row="1">
                                     <Label  Content="Score: " 
                                             FontFamily="Verdana"   
-                                            FontSize="20"/>
+                                            FontSize="20"
+                                            Grid.Row="1"/>
                                     <Label x:Name="contestantScore" 
                                            Content="{Binding Path = score}" 
                                            FontFamily="Verdana" 
@@ -38,9 +49,12 @@
                                              Minimum="0" 
                                              Maximum="100" 
                                              Value="{Binding Path = scorebar }" 
-                                             Height="15" Width="1000"/>
-                            </StackPanel>
-                        </StackPanel>
+                                             Height="15"
+                                             Grid.Row="2"
+                                             Width="450"
+                                             Margin="0,0,0,20"/>
+                            </Grid>
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

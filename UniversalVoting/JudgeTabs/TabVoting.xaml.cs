@@ -86,7 +86,7 @@ namespace UniversalVoting.JudgeTabs
         private string ProfilePic(int personID)
         {
             string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-            string image = personID.ToString() + ".jpg";
+            string image = "personpic" + personID.ToString() + ".jpg";
             string strDirectory = System.IO.Path.Combine(dir, "Images", image);
             if (File.Exists(strDirectory))
                 return strDirectory;
