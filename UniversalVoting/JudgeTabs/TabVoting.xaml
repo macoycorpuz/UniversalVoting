@@ -84,15 +84,30 @@
         </DataGrid>
         <StackPanel Name="pnlRateHere"
                     Grid.Row="2"
-                    Orientation="Horizontal"/>
+                    Orientation="Horizontal">
+            <Label Name="lblCriteria"
+                   VerticalAlignment ="Center"
+                   Content="*Criteria*"
+                   Margin="30,10,40,10"
+                   FontFamily="../Fonts/Helvetica.otf#Helvetica"
+                   FontSize="21"
+                   Visibility="Hidden"/>
+            <TextBox Name="txtRate"
+                     Width="100"
+                     Height="30"
+                     Visibility="Hidden"
+                     FontFamily="../Fonts/Helvetica.otf#Helvetica"
+                     FontSize="21"/>
+        </StackPanel>
         <Button Name="btnRefresh"
                 Width="150"
                 Height="50"
-                Content="Refresh"
+                Content="Vote"
                 FontSize="20"
                 Grid.Row="2"
                 Grid.Column="1"
-                Click="btnRefresh_Click"/>
+                Click="btnRefresh_Click"
+                Visibility="Hidden"/>
 
     </Grid>
 </UserControl>

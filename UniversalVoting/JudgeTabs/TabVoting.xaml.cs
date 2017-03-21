@@ -31,7 +31,8 @@ namespace UniversalVoting.JudgeTabs
         ObservableCollection<Criteria> _criteria;
         DataTable _criteriaDT;
         DataTable _scoreDT;
-
+        int _rate;
+        int EventCriteriaID;
         #endregion
 
         public TabVoting()
@@ -57,20 +58,25 @@ namespace UniversalVoting.JudgeTabs
                 string name = (dtgrdCriteria.SelectedCells[0].Column.GetCellContent(item) as TextBlock).Text;
 
                 _clsDb.ExecuteStoredProc("[MCspGetEventCriteriaID]", "@Name", name, "@EventJudgeID", _eventjudgejID);
-                int EventCriteriaID = _clsDb.Data.Rows[0].Field<int>(0);
+                EventCriteriaID = _clsDb.Data.Rows[0].Field<int>(0);
                 _clsDb = new Database();
                 _clsDb.ExecuteStoredProc("[MCspViewScore]", "@EventJudgeID", _eventjudgejID, "@ContestantID", _contestantID, "@EventCriteriaID", EventCriteriaID.ToString());
-                int _rate = Convert.ToInt32(_clsDb.Data.Rows[0].ItemArray.GetValue(0).ToString());
-                pnlRateHere.Children.Clear();
-                RatingStar rs = new RatingStar(_rate, false, _eventjudgejID, _contestantID, EventCriteriaID);
-                Label lblCriteria = new Label();
-                lblCriteria.VerticalAlignment = VerticalAlignment.Center;
-                lblCriteria.Margin = new Thickness(10);
-                lblCriteria.FontFamily = new FontFamily("../Fonts/Helvetica.otf#Helvetica");
-                lblCriteria.FontSize = 21;
+                _rate = Convert.ToInt32(_clsDb.Data.Rows[0].ItemArray.GetValue(0).ToString());
                 lblCriteria.Content = name;
-                pnlRateHere.Children.Add(lblCriteria);
-                pnlRateHere.Children.Add(rs);
+                lblCriteria.Visibility = Visibility.Visible;
+                txtRate.Visibility = Visibility.Visible;
+                btnRefresh.Visibility = Visibility.Visible;
+                txtRate.Text = _rate.ToString();
+                //pnlRateHere.Children.Clear();
+                //RatingStar rs = new RatingStar(_rate, false, _eventjudgejID, _contestantID, EventCriteriaID);
+                //Label lblCriteria = new Label();
+                //lblCriteria.VerticalAlignment = VerticalAlignment.Center;
+                //lblCriteria.Margin = new Thickness(10);
+                //lblCriteria.FontFamily = new FontFamily("../Fonts/Helvetica.otf#Helvetica");
+                //lblCriteria.FontSize = 21;
+                //lblCriteria.Content = name;
+                //pnlRateHere.Children.Add(lblCriteria);
+                //pnlRateHere.Children.Add(rs);
             }
             catch 
             {
@@ -80,6 +86,18 @@ namespace UniversalVoting.JudgeTabs
 
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
+            _clsDb = new Database();
+            int temp;
+            if (int.TryParse(txtRate.Text, out temp))
+            {
+                int r = Convert.ToInt32(txtRate.Text);
+                if (r > 0 && r <= 10)
+                    _clsDb.ExecuteStoredProc("[MCspUpdateScore]", "@EventJudgeID", _eventjudgejID.ToString(), "@ContestantID", _contestantID.ToString(), "@EventCriteriaID", EventCriteriaID.ToString(), "@Score", txtRate.Text.ToString());
+                else
+                    MessageBox.Show("Invalid Rating!");
+            }
+            else
+                MessageBox.Show("Invalid Rating!");
             LoadCriteria();
         }
 
